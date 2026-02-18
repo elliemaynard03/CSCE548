@@ -6,6 +6,6 @@ RUN mvn -q -DskipTests package
 
 FROM eclipse-temurin:17-jre
 WORKDIR /app
-COPY --from=build /app/target/*.jar app.jar
+COPY --from=build /app/target/*-shaded.jar app.jar
 EXPOSE 10000
 CMD ["java", "-jar", "app.jar"]

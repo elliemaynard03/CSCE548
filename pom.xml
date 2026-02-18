@@ -52,4 +52,40 @@
 
     </dependencies>
 
+   <build>
+  <plugins>
+
+    <!-- Shade plugin creates fat jar with dependencies + Main-Class -->
+    <plugin>
+      <groupId>org.apache.maven.plugins</groupId>
+      <artifactId>maven-shade-plugin</artifactId>
+      <version>3.5.0</version>
+      <executions>
+        <execution>
+          <phase>package</phase>
+          <goals>
+            <goal>shade</goal>
+          </goals>
+          <configuration>
+            <createDependencyReducedPom>false</createDependencyReducedPom>
+
+            <!-- make a separate jar: *-shaded.jar (don't replace original) -->
+            <shadedArtifactAttached>true</shadedArtifactAttached>
+            <shadedClassifierName>shaded</shadedClassifierName>
+
+            <transformers>
+              <transformer implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
+                <mainClass>main.java.service.ApiServer</mainClass>
+              </transformer>
+            </transformers>
+          </configuration>
+        </execution>
+      </executions>
+    </plugin>
+
+  </plugins>
+</build>
+
+
+
 </project>
