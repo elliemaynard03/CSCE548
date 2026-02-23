@@ -10,16 +10,26 @@ import java.util.Map;
 import static main.java.service.JsonUtil.gson;
 
 /**
- * CSCE 548 Project 2 - Service Layer (Microservice)
+ * Hosting (Render + Railway MySQL)
  *
- * Local run:
- *   Run Main.java (calls ApiServer.start()) then hit:
- *     GET http://localhost:7070/health
+ * This API is hosted on Render as a Docker Web Service.
+ * - Render builds the project using the Dockerfile in the repo.
+ * - The Dockerfile runs: mvn -DskipTests package
+ * - The service starts with: java -jar app.jar
+ * - Render provides the PORT environment variable automatically.
  *
- * Hosting notes (Render):
- *   - Create a new Web Service
- *   - Use Docker (recommended) or Java build if your repo supports it
- *   - Expose PORT env var (Render sets it); this server reads PORT if present
+ * Database hosting:
+ * - MySQL is hosted on Railway.
+ * - Render connects to Railway using environment variables:
+ *     JDBC_URL  (example: jdbc:mysql://<host>:<port>/<db>?serverTimezone=UTC)
+ *     DB_USER
+ *     DB_PASS
+ *
+ * Deploy steps (high level):
+ * 1) Push code to GitHub
+ * 2) Create Render Web Service -> connect GitHub repo -> choose Docker
+ * 3) Add env vars (JDBC_URL, DB_USER, DB_PASS) in Render
+ * 4) Deploy, then verify /health endpoint
  */
 public class ApiServer {
     
@@ -255,7 +265,7 @@ public class ApiServer {
             ctx.result(gson.toJson(habitEntryManager.getEntriesPrettyByDailyLog(dailyLogId)));
         });
 
-        app.start(port);
+        app.start("0.0.0.0",port);
         return app;
     }
 

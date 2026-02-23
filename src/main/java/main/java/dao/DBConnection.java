@@ -18,7 +18,14 @@ private static final String PASS =
 
 
     public static Connection getConnection() throws SQLException {
+
+        try {
+            Class.forName("com.mysql.cj.jdbc.Driver");
+        } catch (ClassNotFoundException e) {
+            throw new RuntimeException("MySQL JDBC driver not found in classpath", e);
+        }
         return DriverManager.getConnection(URL, USER, PASS);
     }
+    
 }
 
