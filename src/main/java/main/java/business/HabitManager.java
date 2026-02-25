@@ -12,7 +12,10 @@ public interface HabitManager {
 
     Habit getById(int habitId) throws SQLException;
 
-    // DAO supports getByUser (use that instead of getAll)
+    // NEW ✅ Get all habits (limit keeps it lightweight)
+    List<Habit> getAll(int limit) throws SQLException;
+
+    // Subset: habits for a given user
     List<Habit> getByUser(int userId) throws SQLException;
 
     // DAO updates ONLY target + active
@@ -20,5 +23,4 @@ public interface HabitManager {
 
     boolean delete(int habitId) throws SQLException;
 }
-
 

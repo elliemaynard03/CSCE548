@@ -1,0 +1,149 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Wellness Tracker Client</title>
+  <style>
+    body { font-family: Arial, sans-serif; padding: 20px; max-width: 1100px; margin: 0 auto; }
+    .row { display: flex; gap: 16px; flex-wrap: wrap; }
+    .card { border: 1px solid #ddd; border-radius: 10px; padding: 14px; width: 340px; }
+    .card h2 { margin: 0 0 10px 0; font-size: 18px; }
+    .controls { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 10px; }
+    input { padding: 8px; border: 1px solid #ccc; border-radius: 8px; width: 110px; }
+    button { padding: 8px 10px; border: 1px solid #bbb; border-radius: 8px; background: #f7f7f7; cursor: pointer; }
+    button:hover { background: #eee; }
+    pre { background: #f3f3f3; padding: 12px; border-radius: 10px; overflow: auto; height: 360px; }
+    .small { color: #666; font-size: 12px; margin-top: 6px; }
+    .top { display:flex; justify-content: space-between; align-items: baseline; gap: 12px; flex-wrap: wrap; }
+    code { background: #f3f3f3; padding: 2px 6px; border-radius: 6px; }
+  </style>
+</head>
+<body>
+  <div class="top">
+    <h1>Wellness Tracker Client (Static)</h1>
+    <div>
+      API Base: <code id="baseLabel"></code>
+    </div>
+  </div>
+
+  <p class="small">
+    This client calls: <b>Get All</b>, <b>Get By ID</b>, and a <b>subset</b> endpoint for each table.
+  </p>
+
+  <div class="row">
+    <div class="card">
+      <h2>Users</h2>
+      <div class="controls">
+        <input id="userId" value="1" />
+        <button onclick="getAllUsers()">Get All</button>
+        <button onclick="getUserById()">Get By ID</button>
+        <button onclick="getUsersSubset()">Subset (limit=5)</button>
+      </div>
+      <div class="small">Endpoints: <code>/api/users</code>, <code>/api/users/{id}</code></div>
+    </div>
+
+    <div class="card">
+      <h2>Habits</h2>
+      <div class="controls">
+        <input id="habitId" value="1" />
+        <button onclick="getAllHabits()">Get All</button>
+        <button onclick="getHabitById()">Get By ID</button>
+        <button onclick="getHabitsByUser()">Subset (by userId)</button>
+      </div>
+      <div class="small">Endpoints: <code>/api/habits</code>, <code>/api/habits/{id}</code>, <code>/api/users/{userId}/habits</code></div>
+    </div>
+
+    <div class="card">
+      <h2>Daily Logs</h2>
+      <div class="controls">
+        <input id="dailyLogId" value="1" />
+        <button onclick="getAllDailyLogs()">Get All</button>
+        <button onclick="getDailyLogById()">Get By ID</button>
+        <button onclick="getDailyLogsByUser()">Subset (by userId)</button>
+      </div>
+      <div class="small">Endpoints: <code>/api/dailyLogs</code>, <code>/api/dailyLogs/{id}</code>, <code>/api/users/{userId}/dailyLogs</code></div>
+    </div>
+
+    <div class="card">
+      <h2>Habit Entries</h2>
+      <div class="controls">
+        <input id="entryId" value="1" />
+        <button onclick="getAllHabitEntries()">Get All</button>
+        <button onclick="getHabitEntryById()">Get By ID</button>
+        <button onclick="getEntriesByDailyLog()">Subset (by dailyLogId)</button>
+      </div>
+      <div class="small">Endpoints: <code>/api/habitEntries</code>, <code>/api/habitEntries/{id}</code>, <code>/api/dailyLogs/{dailyLogId}/habitEntries</code></div>
+    </div>
+  </div>
+
+  <h2 style="margin-top: 18px;">Output</h2>
+  <pre id="out">(click a button)</pre>
+
+<script>
+  // ✅ Your Render API
+  const BASE = "https://wellness-tracker-y1s5.onrender.com";
+  const API  = BASE + "/api";
+  document.getElementById("baseLabel").textContent = BASE;
+
+  async function call(url) {
+    const out = document.getElementById("out");
+    out.textContent = "Loading...\n" + url;
+    try {
+      const res = await fetch(url);
+      const text = await res.text();
+      // If response is JSON, pretty print. Otherwise show raw.
+      try {
+        const json = JSON.parse(text);
+        out.textContent = url + "\n\n" + JSON.stringify(json, null, 2);
+      } catch {
+        out.textContent = url + "\n\n" + text;
+      }
+    } catch (e) {
+      out.textContent = "Error calling:\n" + url + "\n\n" + e.message;
+    }
+  }
+
+  // USERS
+  function getAllUsers() { call(`${API}/users?limit=50`); }
+  function getUserById() {
+    const id = document.getElementById("userId").value.trim();
+    call(`${API}/users/${id}`);
+  }
+  function getUsersSubset() { call(`${API}/users?limit=5`); }
+
+  // HABITS
+  function getAllHabits() { call(`${API}/habits?limit=50`); }
+  function getHabitById() {
+    const id = document.getElementById("habitId").value.trim();
+    call(`${API}/habits/${id}`);
+  }
+  function getHabitsByUser() {
+    const userId = document.getElementById("habitId").value.trim();
+    call(`${API}/users/${userId}/habits`);
+  }
+
+  // DAILY LOGS
+  function getAllDailyLogs() { call(`${API}/dailyLogs?limit=50`); }
+  function getDailyLogById() {
+    const id = document.getElementById("dailyLogId").value.trim();
+    call(`${API}/dailyLogs/${id}`);
+  }
+  function getDailyLogsByUser() {
+    const userId = document.getElementById("dailyLogId").value.trim();
+    call(`${API}/users/${userId}/dailyLogs`);
+  }
+
+  // HABIT ENTRIES
+  function getAllHabitEntries() { call(`${API}/habitEntries?limit=50`); }
+  function getHabitEntryById() {
+    const id = document.getElementById("entryId").value.trim();
+    call(`${API}/habitEntries/${id}`);
+  }
+  function getEntriesByDailyLog() {
+    const dailyLogId = document.getElementById("entryId").value.trim();
+    call(`${API}/dailyLogs/${dailyLogId}/habitEntries`);
+  }
+</script>
+</body>
+</html>

@@ -32,7 +32,6 @@ import static main.java.service.JsonUtil.gson;
  * 4) Deploy, then verify /health endpoint
  */
 public class ApiServer {
-    
 
     public static Javalin start() {
         // Wire DAOs -> Managers (Business Layer)
@@ -69,7 +68,6 @@ public class ApiServer {
 
         // ------------------------------------------------------------
         // USERS
-        // DAO/Manager create requires email + fullName
         // ------------------------------------------------------------
 
         // POST /api/users  body: {"email":"a@b.com","fullName":"Alice"}
@@ -83,12 +81,12 @@ public class ApiServer {
         });
 
         // GET /api/users?limit=50
-        app.get("/api/users", ctx -> {
-            int limit = 50;
-            String limitStr = ctx.queryParam("limit");
-            if (limitStr != null) limit = Integer.parseInt(limitStr);
-            ctx.result(gson.toJson(userManager.getAll(limit)));
-        });
+app.get("/api/users", ctx -> {
+    int limit = 50;
+    String limitStr = ctx.queryParam("limit");
+    if (limitStr != null) limit = Integer.parseInt(limitStr);
+    ctx.result(gson.toJson(userManager.getAll(limit)));
+});
 
         // GET /api/users/{id}
         app.get("/api/users/{id}", ctx -> {
@@ -114,7 +112,6 @@ public class ApiServer {
 
         // ------------------------------------------------------------
         // HABITS
-        // HabitManager: create(Habit)->Habit, getByUser(userId), updateTarget, delete
         // ------------------------------------------------------------
 
         // POST /api/habits (body is a full Habit json)
@@ -124,7 +121,15 @@ public class ApiServer {
             ctx.status(201).result(gson.toJson(created));
         });
 
-        // GET /api/users/{userId}/habits
+        // GET /api/habits?limit=200
+app.get("/api/habits", ctx -> {
+    int limit = 200;
+    String limitStr = ctx.queryParam("limit");
+    if (limitStr != null) limit = Integer.parseInt(limitStr);
+    ctx.result(gson.toJson(habitManager.getAll(limit)));
+});
+
+        // GET /api/users/{userId}/habits (subset)
         app.get("/api/users/{userId}/habits", ctx -> {
             int userId = Integer.parseInt(ctx.pathParam("userId"));
             ctx.result(gson.toJson(habitManager.getByUser(userId)));
@@ -164,7 +169,6 @@ public class ApiServer {
 
         // ------------------------------------------------------------
         // DAILY LOGS
-        // DailyLogManager: create(DailyLog)->DailyLog, getByUser(userId), updateRatings, delete
         // ------------------------------------------------------------
 
         // POST /api/dailyLogs  (body is a full DailyLog json)
@@ -174,7 +178,15 @@ public class ApiServer {
             ctx.status(201).result(gson.toJson(created));
         });
 
-        // GET /api/users/{userId}/dailyLogs
+        // GET /api/dailyLogs?limit=200
+app.get("/api/dailyLogs", ctx -> {
+    int limit = 200;
+    String limitStr = ctx.queryParam("limit");
+    if (limitStr != null) limit = Integer.parseInt(limitStr);
+    ctx.result(gson.toJson(dailyLogManager.getAll(limit)));
+});
+
+        // GET /api/users/{userId}/dailyLogs (subset)
         app.get("/api/users/{userId}/dailyLogs", ctx -> {
             int userId = Integer.parseInt(ctx.pathParam("userId"));
             ctx.result(gson.toJson(dailyLogManager.getByUser(userId)));
@@ -211,7 +223,6 @@ public class ApiServer {
 
         // ------------------------------------------------------------
         // HABIT ENTRIES
-        // HabitEntryManager: create(HabitEntry)->HabitEntry, getByDailyLog, updateEntry, delete, pretty list
         // ------------------------------------------------------------
 
         // POST /api/habitEntries (body full HabitEntry json)
@@ -221,7 +232,15 @@ public class ApiServer {
             ctx.status(201).result(gson.toJson(created));
         });
 
-        // GET /api/dailyLogs/{dailyLogId}/habitEntries
+        // GET /api/habitEntries?limit=500
+app.get("/api/habitEntries", ctx -> {
+    int limit = 500;
+    String limitStr = ctx.queryParam("limit");
+    if (limitStr != null) limit = Integer.parseInt(limitStr);
+    ctx.result(gson.toJson(habitEntryManager.getAll(limit)));
+});
+
+        // GET /api/dailyLogs/{dailyLogId}/habitEntries (subset)
         app.get("/api/dailyLogs/{dailyLogId}/habitEntries", ctx -> {
             int dailyLogId = Integer.parseInt(ctx.pathParam("dailyLogId"));
             ctx.result(gson.toJson(habitEntryManager.getByDailyLog(dailyLogId)));
@@ -265,12 +284,11 @@ public class ApiServer {
             ctx.result(gson.toJson(habitEntryManager.getEntriesPrettyByDailyLog(dailyLogId)));
         });
 
-        app.start("0.0.0.0",port);
+        app.start("0.0.0.0", port);
         return app;
     }
 
     public static void main(String[] args) {
-    start();
-}
-
+        start();
+    }
 }

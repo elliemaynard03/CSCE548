@@ -23,7 +23,7 @@ public class HabitManagerImpl implements HabitManager {
         if (habit.getUnit() == null || habit.getUnit().isBlank())
             throw new IllegalArgumentException("Habit unit is required");
 
-        Habit created = habitDAO.create(habit);   // ✅ matches DAO
+        Habit created = habitDAO.create(habit);
         if (created == null) throw new RuntimeException("Failed to create Habit");
         return created;
     }
@@ -32,22 +32,29 @@ public class HabitManagerImpl implements HabitManager {
     public Habit getById(int habitId) throws SQLException {
         if (habitId <= 0) throw new IllegalArgumentException("habitId must be positive");
 
-        Habit found = habitDAO.getById(habitId);  // ✅ matches DAO
+        Habit found = habitDAO.getById(habitId);
         if (found == null) throw new RuntimeException("Habit not found: " + habitId);
         return found;
+    }
+
+    // NEW ✅ Get all habits
+    @Override
+    public List<Habit> getAll(int limit) throws SQLException {
+        if (limit <= 0) throw new IllegalArgumentException("limit must be positive");
+        return habitDAO.getAll(limit);
     }
 
     @Override
     public List<Habit> getByUser(int userId) throws SQLException {
         if (userId <= 0) throw new IllegalArgumentException("userId must be positive");
-        return habitDAO.getByUser(userId);        // ✅ matches DAO
+        return habitDAO.getByUser(userId);
     }
 
     @Override
     public boolean updateTarget(int habitId, Double targetValue, boolean isActive) throws SQLException {
         if (habitId <= 0) throw new IllegalArgumentException("habitId must be positive");
 
-        boolean ok = habitDAO.updateTarget(habitId, targetValue, isActive); // ✅ matches DAO
+        boolean ok = habitDAO.updateTarget(habitId, targetValue, isActive);
         if (!ok) throw new RuntimeException("Habit not found for update: " + habitId);
         return true;
     }
@@ -56,7 +63,7 @@ public class HabitManagerImpl implements HabitManager {
     public boolean delete(int habitId) throws SQLException {
         if (habitId <= 0) throw new IllegalArgumentException("habitId must be positive");
 
-        boolean ok = habitDAO.delete(habitId);    // ✅ matches DAO
+        boolean ok = habitDAO.delete(habitId);
         if (!ok) throw new RuntimeException("Habit not found for delete: " + habitId);
         return true;
     }

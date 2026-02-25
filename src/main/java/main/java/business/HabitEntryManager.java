@@ -12,7 +12,10 @@ public interface HabitEntryManager {
 
     HabitEntry getById(int habitEntryId) throws SQLException;
 
-    // Matches DAO: entries for a given daily log
+    // NEW ✅ Get all entries (limit keeps it lightweight)
+    List<HabitEntry> getAll(int limit) throws SQLException;
+
+    // Matches DAO: entries for a given daily log (subset)
     List<HabitEntry> getByDailyLog(int dailyLogId) throws SQLException;
 
     // Matches DAO: partial update fields
@@ -23,6 +26,3 @@ public interface HabitEntryManager {
     // Matches DAO helper
     List<String> getEntriesPrettyByDailyLog(int dailyLogId) throws SQLException;
 }
-
-
-

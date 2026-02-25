@@ -20,7 +20,7 @@ public class HabitEntryManagerImpl implements HabitEntryManager {
         if (entry.getDailyLogId() <= 0) throw new IllegalArgumentException("dailyLogId must be positive");
         if (entry.getHabitId() <= 0) throw new IllegalArgumentException("habitId must be positive");
 
-        HabitEntry created = habitEntryDAO.create(entry);   // ✅ matches DAO
+        HabitEntry created = habitEntryDAO.create(entry);
         if (created == null) throw new RuntimeException("Failed to create HabitEntry");
         return created;
     }
@@ -29,22 +29,29 @@ public class HabitEntryManagerImpl implements HabitEntryManager {
     public HabitEntry getById(int habitEntryId) throws SQLException {
         if (habitEntryId <= 0) throw new IllegalArgumentException("habitEntryId must be positive");
 
-        HabitEntry found = habitEntryDAO.getById(habitEntryId);  // ✅ matches DAO
+        HabitEntry found = habitEntryDAO.getById(habitEntryId);
         if (found == null) throw new RuntimeException("HabitEntry not found: " + habitEntryId);
         return found;
+    }
+
+    // NEW ✅ Get all habit entries
+    @Override
+    public List<HabitEntry> getAll(int limit) throws SQLException {
+        if (limit <= 0) throw new IllegalArgumentException("limit must be positive");
+        return habitEntryDAO.getAll(limit);
     }
 
     @Override
     public List<HabitEntry> getByDailyLog(int dailyLogId) throws SQLException {
         if (dailyLogId <= 0) throw new IllegalArgumentException("dailyLogId must be positive");
-        return habitEntryDAO.getByDailyLog(dailyLogId);          // ✅ matches DAO
+        return habitEntryDAO.getByDailyLog(dailyLogId);
     }
 
     @Override
     public boolean updateEntry(int habitEntryId, boolean completed, Double actualValue, String note) throws SQLException {
         if (habitEntryId <= 0) throw new IllegalArgumentException("habitEntryId must be positive");
 
-        boolean ok = habitEntryDAO.updateEntry(habitEntryId, completed, actualValue, note); // ✅ matches DAO
+        boolean ok = habitEntryDAO.updateEntry(habitEntryId, completed, actualValue, note);
         if (!ok) throw new RuntimeException("HabitEntry not found for update: " + habitEntryId);
         return true;
     }
@@ -53,7 +60,7 @@ public class HabitEntryManagerImpl implements HabitEntryManager {
     public boolean delete(int habitEntryId) throws SQLException {
         if (habitEntryId <= 0) throw new IllegalArgumentException("habitEntryId must be positive");
 
-        boolean ok = habitEntryDAO.delete(habitEntryId);         // ✅ matches DAO
+        boolean ok = habitEntryDAO.delete(habitEntryId);
         if (!ok) throw new RuntimeException("HabitEntry not found for delete: " + habitEntryId);
         return true;
     }
@@ -61,6 +68,6 @@ public class HabitEntryManagerImpl implements HabitEntryManager {
     @Override
     public List<String> getEntriesPrettyByDailyLog(int dailyLogId) throws SQLException {
         if (dailyLogId <= 0) throw new IllegalArgumentException("dailyLogId must be positive");
-        return habitEntryDAO.getEntriesPrettyByDailyLog(dailyLogId); // ✅ matches DAO
+        return habitEntryDAO.getEntriesPrettyByDailyLog(dailyLogId);
     }
 }

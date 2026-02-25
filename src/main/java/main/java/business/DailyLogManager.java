@@ -9,10 +9,13 @@ public interface DailyLogManager {
     DailyLog create(DailyLog log) throws SQLException;
     DailyLog getById(int id) throws SQLException;
 
-    // Your DAO supports "getByUser" (better than getAll)
+    // NEW ✅ Get all logs (limit to keep it lightweight)
+    List<DailyLog> getAll(int limit) throws SQLException;
+
+    // Subset: logs for a given user
     List<DailyLog> getByUser(int userId) throws SQLException;
 
-    // Your DAO supports updating ratings fields (not a full object update)
+    // Update ratings fields (not a full object update)
     boolean updateRatings(int dailyLogId,
                           Double sleepHours,
                           Integer mood,
@@ -22,5 +25,3 @@ public interface DailyLogManager {
 
     boolean delete(int id) throws SQLException;
 }
-
-

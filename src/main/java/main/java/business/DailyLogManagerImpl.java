@@ -20,7 +20,6 @@ public class DailyLogManagerImpl implements DailyLogManager {
         if (log.getUserId() <= 0) throw new IllegalArgumentException("userId must be positive");
         if (log.getLogDate() == null) throw new IllegalArgumentException("logDate is required");
 
-        // matches your DAO
         DailyLog created = dailyLogDAO.create(log);
         if (created == null) throw new RuntimeException("Failed to create DailyLog");
         return created;
@@ -30,10 +29,16 @@ public class DailyLogManagerImpl implements DailyLogManager {
     public DailyLog getById(int id) throws SQLException {
         if (id <= 0) throw new IllegalArgumentException("id must be positive");
 
-        // matches your DAO
         DailyLog found = dailyLogDAO.getById(id);
         if (found == null) throw new RuntimeException("DailyLog not found: " + id);
         return found;
+    }
+
+    // NEW ✅
+    @Override
+    public List<DailyLog> getAll(int limit) throws SQLException {
+        if (limit <= 0) throw new IllegalArgumentException("limit must be positive");
+        return dailyLogDAO.getAll(limit);
     }
 
     @Override
@@ -65,5 +70,3 @@ public class DailyLogManagerImpl implements DailyLogManager {
         return true;
     }
 }
-
-

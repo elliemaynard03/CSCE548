@@ -54,20 +54,40 @@ public class DailyLogDAO {
 
             try (ResultSet rs = ps.executeQuery()) {
                 if (rs.next()) {
-                    return new DailyLog(
-                            rs.getInt("daily_log_id"),
-                            rs.getInt("user_id"),
-                            rs.getDate("log_date"),
-                            getNullableDouble(rs, "sleep_hours"),   // ✅ FIXED
-                            (Integer) rs.getObject("mood_rating"),
-                            (Integer) rs.getObject("stress_level"),
-                            (Integer) rs.getObject("energy_level"),
-                            rs.getString("notes")
-                    );
+                    return mapRowToDailyLog(rs);
                 }
             }
         }
         return null;
+    }
+
+    /**
+     * NEW ✅ Get all DailyLogs (limited for performance)
+     * Example: limit=200
+     */
+    public List<DailyLog> getAll(int limit) throws SQLException {
+        String sql = """
+            SELECT *
+            FROM DailyLog
+            ORDER BY log_date DESC, daily_log_id DESC
+            LIMIT ?
+            """;
+
+        List<DailyLog> logs = new ArrayList<>();
+
+        try (Connection conn = DBConnection.getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql)) {
+
+            ps.setInt(1, limit);
+
+            try (ResultSet rs = ps.executeQuery()) {
+                while (rs.next()) {
+                    logs.add(mapRowToDailyLog(rs));
+                }
+            }
+        }
+
+        return logs;
     }
 
     public List<DailyLog> getByUser(int userId) throws SQLException {
@@ -81,16 +101,7 @@ public class DailyLogDAO {
 
             try (ResultSet rs = ps.executeQuery()) {
                 while (rs.next()) {
-                    logs.add(new DailyLog(
-                            rs.getInt("daily_log_id"),
-                            rs.getInt("user_id"),
-                            rs.getDate("log_date"),
-                            getNullableDouble(rs, "sleep_hours"),   // ✅ FIXED
-                            (Integer) rs.getObject("mood_rating"),
-                            (Integer) rs.getObject("stress_level"),
-                            (Integer) rs.getObject("energy_level"),
-                            rs.getString("notes")
-                    ));
+                    logs.add(mapRowToDailyLog(rs));
                 }
             }
         }
@@ -140,10 +151,26 @@ public class DailyLogDAO {
         }
     }
 
+    // ----------------------------
+    // Helpers
+    // ----------------------------
+
+    private DailyLog mapRowToDailyLog(ResultSet rs) throws SQLException {
+        return new DailyLog(
+                rs.getInt("daily_log_id"),
+                rs.getInt("user_id"),
+                rs.getDate("log_date"),
+                getNullableDouble(rs, "sleep_hours"),
+                (Integer) rs.getObject("mood_rating"),
+                (Integer) rs.getObject("stress_level"),
+                (Integer) rs.getObject("energy_level"),
+                rs.getString("notes")
+        );
+    }
+
     // ✅ Helper to safely convert DECIMAL -> Double
     private Double getNullableDouble(ResultSet rs, String col) throws SQLException {
         java.math.BigDecimal bd = rs.getBigDecimal(col);
         return (bd == null) ? null : bd.doubleValue();
     }
 }
-

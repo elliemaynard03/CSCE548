@@ -41,18 +41,40 @@ public class HabitDAO {
 
             try (ResultSet rs = ps.executeQuery()) {
                 if (rs.next()) {
-                    return new Habit(
-                            rs.getInt("habit_id"),
-                            rs.getInt("user_id"),
-                            rs.getString("name"),
-                            rs.getString("unit"),
-                            getNullableDouble(rs, "target_value"),   // ✅ FIX
-                            rs.getBoolean("is_active")
-                    );
+                    return mapRowToHabit(rs);
                 }
             }
         }
         return null;
+    }
+
+    /**
+     * NEW ✅ Get all Habits (limited for performance)
+     * Example: limit=200
+     */
+    public List<Habit> getAll(int limit) throws SQLException {
+        String sql = """
+            SELECT habit_id, user_id, name, unit, target_value, is_active
+            FROM Habit
+            ORDER BY habit_id DESC
+            LIMIT ?
+            """;
+
+        List<Habit> habits = new ArrayList<>();
+
+        try (Connection conn = DBConnection.getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql)) {
+
+            ps.setInt(1, limit);
+
+            try (ResultSet rs = ps.executeQuery()) {
+                while (rs.next()) {
+                    habits.add(mapRowToHabit(rs));
+                }
+            }
+        }
+
+        return habits;
     }
 
     public List<Habit> getByUser(int userId) throws SQLException {
@@ -66,14 +88,7 @@ public class HabitDAO {
 
             try (ResultSet rs = ps.executeQuery()) {
                 while (rs.next()) {
-                    habits.add(new Habit(
-                            rs.getInt("habit_id"),
-                            rs.getInt("user_id"),
-                            rs.getString("name"),
-                            rs.getString("unit"),
-                            getNullableDouble(rs, "target_value"),   // ✅ FIX
-                            rs.getBoolean("is_active")
-                    ));
+                    habits.add(mapRowToHabit(rs));
                 }
             }
         }
@@ -106,7 +121,22 @@ public class HabitDAO {
         }
     }
 
-    // ✅ PUT THIS HERE: inside the class, near the bottom, outside other methods
+    // ----------------------------
+    // Helpers
+    // ----------------------------
+
+    private Habit mapRowToHabit(ResultSet rs) throws SQLException {
+        return new Habit(
+                rs.getInt("habit_id"),
+                rs.getInt("user_id"),
+                rs.getString("name"),
+                rs.getString("unit"),
+                getNullableDouble(rs, "target_value"),
+                rs.getBoolean("is_active")
+        );
+    }
+
+    // ✅ Helper: safely convert DECIMAL -> Double
     private Double getNullableDouble(ResultSet rs, String col) throws SQLException {
         java.math.BigDecimal bd = rs.getBigDecimal(col);
         return (bd == null) ? null : bd.doubleValue();

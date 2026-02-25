@@ -46,18 +46,40 @@ public class HabitEntryDAO {
 
             try (ResultSet rs = ps.executeQuery()) {
                 if (rs.next()) {
-                    return new HabitEntry(
-                            rs.getInt("habit_entry_id"),
-                            rs.getInt("daily_log_id"),
-                            rs.getInt("habit_id"),
-                            rs.getBoolean("completed"),
-                            getNullableDouble(rs, "actual_value"),   // ✅ FIXED
-                            rs.getString("entry_note")
-                    );
+                    return mapRowToHabitEntry(rs);
                 }
             }
         }
         return null;
+    }
+
+    /**
+     * NEW ✅ Get all HabitEntries (limited for performance)
+     * Example: limit=500
+     */
+    public List<HabitEntry> getAll(int limit) throws SQLException {
+        String sql = """
+            SELECT *
+            FROM HabitEntry
+            ORDER BY habit_entry_id DESC
+            LIMIT ?
+            """;
+
+        List<HabitEntry> entries = new ArrayList<>();
+
+        try (Connection conn = DBConnection.getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql)) {
+
+            ps.setInt(1, limit);
+
+            try (ResultSet rs = ps.executeQuery()) {
+                while (rs.next()) {
+                    entries.add(mapRowToHabitEntry(rs));
+                }
+            }
+        }
+
+        return entries;
     }
 
     public List<HabitEntry> getByDailyLog(int dailyLogId) throws SQLException {
@@ -71,14 +93,7 @@ public class HabitEntryDAO {
 
             try (ResultSet rs = ps.executeQuery()) {
                 while (rs.next()) {
-                    entries.add(new HabitEntry(
-                            rs.getInt("habit_entry_id"),
-                            rs.getInt("daily_log_id"),
-                            rs.getInt("habit_id"),
-                            rs.getBoolean("completed"),
-                            getNullableDouble(rs, "actual_value"),   // ✅ FIXED
-                            rs.getString("entry_note")
-                    ));
+                    entries.add(mapRowToHabitEntry(rs));
                 }
             }
         }
@@ -135,7 +150,6 @@ public class HabitEntryDAO {
 
             try (ResultSet rs = ps.executeQuery()) {
                 while (rs.next()) {
-                    // he.actual_value is DECIMAL so use getBigDecimal (safe) for printing
                     rows.add(
                             String.format(
                                     "entryId=%d | %s (%s) | completed=%s | actual=%s | note=%s",
@@ -153,11 +167,24 @@ public class HabitEntryDAO {
         return rows;
     }
 
+    // ----------------------------
+    // Helpers
+    // ----------------------------
+
+    private HabitEntry mapRowToHabitEntry(ResultSet rs) throws SQLException {
+        return new HabitEntry(
+                rs.getInt("habit_entry_id"),
+                rs.getInt("daily_log_id"),
+                rs.getInt("habit_id"),
+                rs.getBoolean("completed"),
+                getNullableDouble(rs, "actual_value"),
+                rs.getString("entry_note")
+        );
+    }
+
     // ✅ Helper: safely convert DECIMAL -> Double
     private Double getNullableDouble(ResultSet rs, String col) throws SQLException {
         java.math.BigDecimal bd = rs.getBigDecimal(col);
         return (bd == null) ? null : bd.doubleValue();
     }
 }
-
-
