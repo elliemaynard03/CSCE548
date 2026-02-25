@@ -47,6 +47,23 @@ public class ApiServer {
         }
 
         Javalin app = Javalin.create(config -> config.http.defaultContentType = "application/json");
+            
+        // ----------------------------
+// CORS (for GitHub Pages client)
+// ----------------------------
+app.before(ctx -> {
+    ctx.header("Access-Control-Allow-Origin", "*");
+    ctx.header("Access-Control-Allow-Methods", "GET,POST,PUT,DELETE,OPTIONS");
+    ctx.header("Access-Control-Allow-Headers", "Content-Type, Authorization");
+});
+
+// Handle preflight requests
+app.options("/*", ctx -> {
+    ctx.header("Access-Control-Allow-Origin", "*");
+    ctx.header("Access-Control-Allow-Methods", "GET,POST,PUT,DELETE,OPTIONS");
+    ctx.header("Access-Control-Allow-Headers", "Content-Type, Authorization");
+    ctx.status(204);
+});
 
         // Global error handling -> JSON
         app.exception(IllegalArgumentException.class, (e, ctx) ->
