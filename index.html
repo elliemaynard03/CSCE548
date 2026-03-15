@@ -126,6 +126,16 @@
       font-size: 14px;
     }
 
+    .summary {
+      margin-bottom: 12px;
+      padding: 12px;
+      background: #f5f8ff;
+      border: 1px solid #d8e5ff;
+      border-radius: 10px;
+      color: #333;
+      font-size: 14px;
+    }
+
     table {
       width: 100%;
       border-collapse: collapse;
@@ -180,15 +190,18 @@
   <div class="instructions">
     <h2>How to Use This Website</h2>
     <p>
-      Use the sections below to view data from the Wellness Tracker system.
-      You can show all records, look up one record by ID, or view related records for a specific user or daily log.
+      Use the sections below to explore the Wellness Tracker system. You can display all records,
+      search for one record by entering its ID, or view related records for a selected user or daily log.
+    </p>
+    <p>
+      This page is designed to show information in a clean table format so it is easier for non-technical users to read.
     </p>
   </div>
 
   <div class="grid">
     <div class="card">
       <h2>Users</h2>
-      <p>View all users, search for one user by ID, or show the first 5 users.</p>
+      <p>View all users, search for a single user by ID, or show the first 5 users.</p>
       <div class="controls">
         <input id="userId" value="1" placeholder="User ID">
         <button onclick="getAllUsers()">Show All Users</button>
@@ -199,7 +212,7 @@
 
     <div class="card">
       <h2>Habits</h2>
-      <p>View all habits, search by habit ID, or show habits for a specific user.</p>
+      <p>View all habits, search by habit ID, or show all habits that belong to one user.</p>
       <div class="controls">
         <input id="habitId" value="1" placeholder="Habit/User ID">
         <button onclick="getAllHabits()">Show All Habits</button>
@@ -210,7 +223,7 @@
 
     <div class="card">
       <h2>Daily Logs</h2>
-      <p>View all daily logs, search by daily log ID, or show daily logs for a user.</p>
+      <p>View all daily logs, search by daily log ID, or show all daily logs for one user.</p>
       <div class="controls">
         <input id="dailyLogId" value="1" placeholder="Log/User ID">
         <button onclick="getAllDailyLogs()">Show All Daily Logs</button>
@@ -221,7 +234,7 @@
 
     <div class="card">
       <h2>Habit Entries</h2>
-      <p>View all habit entries, search by habit entry ID, or show entries for a daily log.</p>
+      <p>View all habit entries, search by habit entry ID, or show entries for a selected daily log.</p>
       <div class="controls">
         <input id="entryId" value="1" placeholder="Entry/Log ID">
         <button onclick="getAllHabitEntries()">Show All Habit Entries</button>
@@ -242,15 +255,22 @@
   const API = BASE + "/api";
   document.getElementById("baseLabel").textContent = BASE;
 
-  async function fetchData(url, title, renderer) {
+  async function fetchData(url, title, renderer, summaryText) {
     const status = document.getElementById("status");
     const resultArea = document.getElementById("resultArea");
 
-    status.textContent = `Loading: ${title}`;
-    resultArea.innerHTML = '<div class="empty">Loading data...</div>';
+    status.textContent = `Loading data for ${title}...`;
+    resultArea.innerHTML = '<div class="empty">Loading data, please wait...</div>';
 
     try {
       const res = await fetch(url);
+
+      if (!res.ok) {
+        resultArea.innerHTML = `<div class="error">The request could not be completed. Server returned status ${res.status}.</div>`;
+        status.textContent = `Unable to display ${title}.`;
+        return;
+      }
+
       const text = await res.text();
 
       let data;
@@ -258,31 +278,54 @@
         data = JSON.parse(text);
       } catch {
         resultArea.innerHTML = `<div class="error">The server returned a response that could not be displayed.</div>`;
-        status.textContent = `Finished: ${title}`;
+        status.textContent = `Unable to display ${title}.`;
         return;
       }
 
-      status.textContent = `Showing results for: ${title}`;
-      renderer(data);
+      renderer(data, title, summaryText);
     } catch (e) {
       resultArea.innerHTML = `<div class="error">Unable to load data. ${e.message}</div>`;
-      status.textContent = `Error loading: ${title}`;
+      status.textContent = `Error loading ${title}.`;
     }
   }
 
-  function renderTable(data, columns) {
-    const resultArea = document.getElementById("resultArea");
-
-    if (!Array.isArray(data)) {
-      data = [data];
+  function normalizeValue(value, key) {
+    if (value === null || value === undefined || value === "") {
+      return "Not provided";
     }
 
-    if (!data || data.length === 0 || data[0] == null) {
-      resultArea.innerHTML = `<div class="empty">No records were found.</div>`;
+    if (typeof value === "boolean") {
+      if (key === "active") return value ? "Active" : "Inactive";
+      if (key === "completed") return value ? "Completed" : "Not Completed";
+      return value ? "Yes" : "No";
+    }
+
+    return value;
+  }
+
+  function renderTable(data, columns, title, summaryText) {
+    const resultArea = document.getElementById("resultArea");
+    const status = document.getElementById("status");
+
+    if (!Array.isArray(data)) {
+      data = data ? [data] : [];
+    }
+
+    if (data.length === 0 || data[0] == null) {
+      resultArea.innerHTML = `<div class="empty">No records were found for this request.</div>`;
+      status.textContent = `No results found for ${title}.`;
       return;
     }
 
-    let html = "<table><thead><tr>";
+    const recordWord = data.length === 1 ? "record" : "records";
+    status.textContent = `Displaying ${data.length} ${recordWord} for ${title}.`;
+
+    let html = "";
+    if (summaryText) {
+      html += `<div class="summary">${summaryText}</div>`;
+    }
+
+    html += "<table><thead><tr>";
     for (const col of columns) {
       html += `<th>${col.label}</th>`;
     }
@@ -291,7 +334,7 @@
     for (const row of data) {
       html += "<tr>";
       for (const col of columns) {
-        const value = row[col.key] ?? "";
+        const value = normalizeValue(row[col.key], col.key);
         html += `<td>${value}</td>`;
       }
       html += "</tr>";
@@ -301,103 +344,191 @@
     resultArea.innerHTML = html;
   }
 
-  function renderUsers(data) {
+  function renderUsers(data, title, summaryText) {
     renderTable(data, [
       { key: "userId", label: "User ID" },
-      { key: "email", label: "Email" },
       { key: "fullName", label: "Full Name" },
-      { key: "createdAt", label: "Created At" }
-    ]);
+      { key: "email", label: "Email Address" },
+      { key: "createdAt", label: "Account Created" }
+    ], title, summaryText);
   }
 
-  function renderHabits(data) {
+  function renderHabits(data, title, summaryText) {
     renderTable(data, [
       { key: "habitId", label: "Habit ID" },
       { key: "userId", label: "User ID" },
       { key: "name", label: "Habit Name" },
-      { key: "unit", label: "Unit" },
+      { key: "unit", label: "Measurement Unit" },
       { key: "targetValue", label: "Target Value" },
-      { key: "active", label: "Active" }
-    ]);
+      { key: "active", label: "Status" }
+    ], title, summaryText);
   }
 
-  function renderDailyLogs(data) {
+  function renderDailyLogs(data, title, summaryText) {
     renderTable(data, [
       { key: "dailyLogId", label: "Daily Log ID" },
       { key: "userId", label: "User ID" },
-      { key: "logDate", label: "Log Date" },
+      { key: "logDate", label: "Date" },
       { key: "sleepHours", label: "Sleep Hours" },
       { key: "moodRating", label: "Mood Rating" },
       { key: "stressLevel", label: "Stress Level" },
       { key: "energyLevel", label: "Energy Level" },
       { key: "notes", label: "Notes" }
-    ]);
+    ], title, summaryText);
   }
 
-  function renderHabitEntries(data) {
+  function renderHabitEntries(data, title, summaryText) {
     renderTable(data, [
       { key: "habitEntryId", label: "Habit Entry ID" },
       { key: "dailyLogId", label: "Daily Log ID" },
       { key: "habitId", label: "Habit ID" },
-      { key: "completed", label: "Completed" },
+      { key: "completed", label: "Completion Status" },
       { key: "actualValue", label: "Actual Value" },
-      { key: "entryNote", label: "Entry Note" }
-    ]);
+      { key: "entryNote", label: "Entry Notes" }
+    ], title, summaryText);
+  }
+
+  function requireId(inputId, label) {
+    const value = document.getElementById(inputId).value.trim();
+    const resultArea = document.getElementById("resultArea");
+    const status = document.getElementById("status");
+
+    if (!value) {
+      resultArea.innerHTML = `<div class="error">Please enter a ${label} before continuing.</div>`;
+      status.textContent = `Missing ${label}.`;
+      return null;
+    }
+
+    return value;
   }
 
   function getAllUsers() {
-    fetchData(`${API}/users?limit=50`, "All Users", renderUsers);
+    fetchData(
+      `${API}/users?limit=50`,
+      "all users",
+      renderUsers,
+      "This table shows all user accounts currently stored in the Wellness Tracker system."
+    );
   }
 
   function getUserById() {
-    const id = document.getElementById("userId").value.trim();
-    fetchData(`${API}/users/${id}`, `User ID ${id}`, renderUsers);
+    const id = requireId("userId", "User ID");
+    if (!id) return;
+
+    fetchData(
+      `${API}/users/${id}`,
+      `user ID ${id}`,
+      renderUsers,
+      `This table shows the account information for the selected user.`
+    );
   }
 
   function getUsersSubset() {
-    fetchData(`${API}/users?limit=5`, "First 5 Users", renderUsers);
+    fetchData(
+      `${API}/users?limit=5`,
+      "the first 5 users",
+      renderUsers,
+      "This table shows a smaller sample of user records."
+    );
   }
 
   function getAllHabits() {
-    fetchData(`${API}/habits?limit=50`, "All Habits", renderHabits);
+    fetchData(
+      `${API}/habits?limit=50`,
+      "all habits",
+      renderHabits,
+      "This table shows all habits currently stored in the Wellness Tracker system."
+    );
   }
 
   function getHabitById() {
-    const id = document.getElementById("habitId").value.trim();
-    fetchData(`${API}/habits/${id}`, `Habit ID ${id}`, renderHabits);
+    const id = requireId("habitId", "Habit ID");
+    if (!id) return;
+
+    fetchData(
+      `${API}/habits/${id}`,
+      `habit ID ${id}`,
+      renderHabits,
+      "This table shows information for the selected habit."
+    );
   }
 
   function getHabitsByUser() {
-    const userId = document.getElementById("habitId").value.trim();
-    fetchData(`${API}/users/${userId}/habits`, `Habits for User ${userId}`, renderHabits);
+    const userId = requireId("habitId", "User ID");
+    if (!userId) return;
+
+    fetchData(
+      `${API}/users/${userId}/habits`,
+      `habits for user ${userId}`,
+      renderHabits,
+      "This table shows all habits associated with the selected user."
+    );
   }
 
   function getAllDailyLogs() {
-    fetchData(`${API}/dailyLogs?limit=50`, "All Daily Logs", renderDailyLogs);
+    fetchData(
+      `${API}/dailyLogs?limit=50`,
+      "all daily logs",
+      renderDailyLogs,
+      "This table shows all daily wellness logs in the system."
+    );
   }
 
   function getDailyLogById() {
-    const id = document.getElementById("dailyLogId").value.trim();
-    fetchData(`${API}/dailyLogs/${id}`, `Daily Log ID ${id}`, renderDailyLogs);
+    const id = requireId("dailyLogId", "Daily Log ID");
+    if (!id) return;
+
+    fetchData(
+      `${API}/dailyLogs/${id}`,
+      `daily log ID ${id}`,
+      renderDailyLogs,
+      "This table shows the selected daily log entry."
+    );
   }
 
   function getDailyLogsByUser() {
-    const userId = document.getElementById("dailyLogId").value.trim();
-    fetchData(`${API}/users/${userId}/dailyLogs`, `Daily Logs for User ${userId}`, renderDailyLogs);
+    const userId = requireId("dailyLogId", "User ID");
+    if (!userId) return;
+
+    fetchData(
+      `${API}/users/${userId}/dailyLogs`,
+      `daily logs for user ${userId}`,
+      renderDailyLogs,
+      "This table shows all daily logs associated with the selected user."
+    );
   }
 
   function getAllHabitEntries() {
-    fetchData(`${API}/habitEntries?limit=50`, "All Habit Entries", renderHabitEntries);
+    fetchData(
+      `${API}/habitEntries?limit=50`,
+      "all habit entries",
+      renderHabitEntries,
+      "This table shows all habit entry records in the system."
+    );
   }
 
   function getHabitEntryById() {
-    const id = document.getElementById("entryId").value.trim();
-    fetchData(`${API}/habitEntries/${id}`, `Habit Entry ID ${id}`, renderHabitEntries);
+    const id = requireId("entryId", "Habit Entry ID");
+    if (!id) return;
+
+    fetchData(
+      `${API}/habitEntries/${id}`,
+      `habit entry ID ${id}`,
+      renderHabitEntries,
+      "This table shows the selected habit entry."
+    );
   }
 
   function getEntriesByDailyLog() {
-    const dailyLogId = document.getElementById("entryId").value.trim();
-    fetchData(`${API}/dailyLogs/${dailyLogId}/habitEntries`, `Habit Entries for Daily Log ${dailyLogId}`, renderHabitEntries);
+    const dailyLogId = requireId("entryId", "Daily Log ID");
+    if (!dailyLogId) return;
+
+    fetchData(
+      `${API}/dailyLogs/${dailyLogId}/habitEntries`,
+      `habit entries for daily log ${dailyLogId}`,
+      renderHabitEntries,
+      "This table shows all habit entries recorded for the selected daily log."
+    );
   }
 </script>
 </body>
