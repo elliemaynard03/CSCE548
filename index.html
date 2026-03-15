@@ -5,144 +5,399 @@
   <meta name="viewport" content="width=device-width,initial-scale=1" />
   <title>Wellness Tracker Client</title>
   <style>
-    body { font-family: Arial, sans-serif; padding: 20px; max-width: 1100px; margin: 0 auto; }
-    .row { display: flex; gap: 16px; flex-wrap: wrap; }
-    .card { border: 1px solid #ddd; border-radius: 10px; padding: 14px; width: 340px; }
-    .card h2 { margin: 0 0 10px 0; font-size: 18px; }
-    .controls { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 10px; }
-    input { padding: 8px; border: 1px solid #ccc; border-radius: 8px; width: 110px; }
-    button { padding: 8px 10px; border: 1px solid #bbb; border-radius: 8px; background: #f7f7f7; cursor: pointer; }
-    button:hover { background: #eee; }
-    pre { background: #f3f3f3; padding: 12px; border-radius: 10px; overflow: auto; height: 360px; }
-    .small { color: #666; font-size: 12px; margin-top: 6px; }
-    .top { display:flex; justify-content: space-between; align-items: baseline; gap: 12px; flex-wrap: wrap; }
-    code { background: #f3f3f3; padding: 2px 6px; border-radius: 6px; }
+    body {
+      font-family: Arial, sans-serif;
+      padding: 24px;
+      max-width: 1200px;
+      margin: 0 auto;
+      background: #f7f8fb;
+      color: #222;
+    }
+
+    h1 {
+      margin-bottom: 8px;
+    }
+
+    .subtitle {
+      color: #555;
+      margin-bottom: 24px;
+    }
+
+    .topbar {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 20px;
+      flex-wrap: wrap;
+      margin-bottom: 24px;
+    }
+
+    .api-box {
+      background: white;
+      border: 1px solid #ddd;
+      border-radius: 10px;
+      padding: 12px 14px;
+      font-size: 14px;
+    }
+
+    .instructions {
+      background: #ffffff;
+      border: 1px solid #ddd;
+      border-radius: 12px;
+      padding: 14px 16px;
+      margin-bottom: 24px;
+    }
+
+    .instructions h2 {
+      margin-top: 0;
+      font-size: 20px;
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+      gap: 18px;
+      margin-bottom: 28px;
+    }
+
+    .card {
+      background: white;
+      border: 1px solid #ddd;
+      border-radius: 14px;
+      padding: 18px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+    }
+
+    .card h2 {
+      margin-top: 0;
+      margin-bottom: 8px;
+    }
+
+    .card p {
+      margin-top: 0;
+      color: #555;
+      font-size: 14px;
+    }
+
+    .controls {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-top: 12px;
+    }
+
+    input {
+      padding: 10px 12px;
+      border: 1px solid #ccc;
+      border-radius: 8px;
+      width: 130px;
+      font-size: 14px;
+    }
+
+    button {
+      padding: 10px 12px;
+      border: none;
+      border-radius: 8px;
+      background: #1f6feb;
+      color: white;
+      font-size: 14px;
+      cursor: pointer;
+    }
+
+    button:hover {
+      background: #1557b0;
+    }
+
+    .results {
+      background: white;
+      border: 1px solid #ddd;
+      border-radius: 14px;
+      padding: 18px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+    }
+
+    .results h2 {
+      margin-top: 0;
+    }
+
+    .status {
+      margin-bottom: 12px;
+      color: #555;
+      font-size: 14px;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 12px;
+      background: white;
+    }
+
+    th, td {
+      border: 1px solid #ddd;
+      padding: 10px;
+      text-align: left;
+      vertical-align: top;
+      font-size: 14px;
+    }
+
+    th {
+      background: #f1f4f8;
+    }
+
+    .empty, .error {
+      padding: 14px;
+      border-radius: 10px;
+      margin-top: 12px;
+    }
+
+    .empty {
+      background: #f7f7f7;
+      color: #555;
+    }
+
+    .error {
+      background: #fde8e8;
+      color: #a11;
+      border: 1px solid #f2bcbc;
+    }
   </style>
 </head>
 <body>
-  <div class="top">
-    <h1>Wellness Tracker Client (Static)</h1>
+  <div class="topbar">
     <div>
-      API Base: <code id="baseLabel"></code>
+      <h1>Wellness Tracker Client</h1>
+      <div class="subtitle">
+        A simple website for viewing users, habits, daily logs, and habit entries in an easy-to-read format.
+      </div>
+    </div>
+    <div class="api-box">
+      <strong>API Base:</strong><br>
+      <span id="baseLabel"></span>
     </div>
   </div>
 
-  <p class="small">
-    This client calls: <b>Get All</b>, <b>Get By ID</b>, and a <b>subset</b> endpoint for each table.
-  </p>
+  <div class="instructions">
+    <h2>How to Use This Website</h2>
+    <p>
+      Use the sections below to view data from the Wellness Tracker system.
+      You can show all records, look up one record by ID, or view related records for a specific user or daily log.
+    </p>
+  </div>
 
-  <div class="row">
+  <div class="grid">
     <div class="card">
       <h2>Users</h2>
+      <p>View all users, search for one user by ID, or show the first 5 users.</p>
       <div class="controls">
-        <input id="userId" value="1" />
-        <button onclick="getAllUsers()">Get All</button>
-        <button onclick="getUserById()">Get By ID</button>
-        <button onclick="getUsersSubset()">Subset (limit=5)</button>
+        <input id="userId" value="1" placeholder="User ID">
+        <button onclick="getAllUsers()">Show All Users</button>
+        <button onclick="getUserById()">Find User by ID</button>
+        <button onclick="getUsersSubset()">Show First 5 Users</button>
       </div>
-      <div class="small">Endpoints: <code>/api/users</code>, <code>/api/users/{id}</code></div>
     </div>
 
     <div class="card">
       <h2>Habits</h2>
+      <p>View all habits, search by habit ID, or show habits for a specific user.</p>
       <div class="controls">
-        <input id="habitId" value="1" />
-        <button onclick="getAllHabits()">Get All</button>
-        <button onclick="getHabitById()">Get By ID</button>
-        <button onclick="getHabitsByUser()">Subset (by userId)</button>
+        <input id="habitId" value="1" placeholder="Habit/User ID">
+        <button onclick="getAllHabits()">Show All Habits</button>
+        <button onclick="getHabitById()">Find Habit by ID</button>
+        <button onclick="getHabitsByUser()">Show Habits for User</button>
       </div>
-      <div class="small">Endpoints: <code>/api/habits</code>, <code>/api/habits/{id}</code>, <code>/api/users/{userId}/habits</code></div>
     </div>
 
     <div class="card">
       <h2>Daily Logs</h2>
+      <p>View all daily logs, search by daily log ID, or show daily logs for a user.</p>
       <div class="controls">
-        <input id="dailyLogId" value="1" />
-        <button onclick="getAllDailyLogs()">Get All</button>
-        <button onclick="getDailyLogById()">Get By ID</button>
-        <button onclick="getDailyLogsByUser()">Subset (by userId)</button>
+        <input id="dailyLogId" value="1" placeholder="Log/User ID">
+        <button onclick="getAllDailyLogs()">Show All Daily Logs</button>
+        <button onclick="getDailyLogById()">Find Daily Log by ID</button>
+        <button onclick="getDailyLogsByUser()">Show Logs for User</button>
       </div>
-      <div class="small">Endpoints: <code>/api/dailyLogs</code>, <code>/api/dailyLogs/{id}</code>, <code>/api/users/{userId}/dailyLogs</code></div>
     </div>
 
     <div class="card">
       <h2>Habit Entries</h2>
+      <p>View all habit entries, search by habit entry ID, or show entries for a daily log.</p>
       <div class="controls">
-        <input id="entryId" value="1" />
-        <button onclick="getAllHabitEntries()">Get All</button>
-        <button onclick="getHabitEntryById()">Get By ID</button>
-        <button onclick="getEntriesByDailyLog()">Subset (by dailyLogId)</button>
+        <input id="entryId" value="1" placeholder="Entry/Log ID">
+        <button onclick="getAllHabitEntries()">Show All Habit Entries</button>
+        <button onclick="getHabitEntryById()">Find Habit Entry by ID</button>
+        <button onclick="getEntriesByDailyLog()">Show Entries for Daily Log</button>
       </div>
-      <div class="small">Endpoints: <code>/api/habitEntries</code>, <code>/api/habitEntries/{id}</code>, <code>/api/dailyLogs/{dailyLogId}/habitEntries</code></div>
     </div>
   </div>
 
-  <h2 style="margin-top: 18px;">Output</h2>
-  <pre id="out">(click a button)</pre>
+  <div class="results">
+    <h2>Results</h2>
+    <div class="status" id="status">Choose an option above to view data.</div>
+    <div id="resultArea" class="empty">No data loaded yet.</div>
+  </div>
 
 <script>
-  // ✅ Your Render API
   const BASE = "https://wellness-tracker-y1s5.onrender.com";
-  const API  = BASE + "/api";
+  const API = BASE + "/api";
   document.getElementById("baseLabel").textContent = BASE;
 
-  async function call(url) {
-    const out = document.getElementById("out");
-    out.textContent = "Loading...\n" + url;
+  async function fetchData(url, title, renderer) {
+    const status = document.getElementById("status");
+    const resultArea = document.getElementById("resultArea");
+
+    status.textContent = `Loading: ${title}`;
+    resultArea.innerHTML = '<div class="empty">Loading data...</div>';
+
     try {
       const res = await fetch(url);
       const text = await res.text();
-      // If response is JSON, pretty print. Otherwise show raw.
+
+      let data;
       try {
-        const json = JSON.parse(text);
-        out.textContent = url + "\n\n" + JSON.stringify(json, null, 2);
+        data = JSON.parse(text);
       } catch {
-        out.textContent = url + "\n\n" + text;
+        resultArea.innerHTML = `<div class="error">The server returned a response that could not be displayed.</div>`;
+        status.textContent = `Finished: ${title}`;
+        return;
       }
+
+      status.textContent = `Showing results for: ${title}`;
+      renderer(data);
     } catch (e) {
-      out.textContent = "Error calling:\n" + url + "\n\n" + e.message;
+      resultArea.innerHTML = `<div class="error">Unable to load data. ${e.message}</div>`;
+      status.textContent = `Error loading: ${title}`;
     }
   }
 
-  // USERS
-  function getAllUsers() { call(`${API}/users?limit=50`); }
+  function renderTable(data, columns) {
+    const resultArea = document.getElementById("resultArea");
+
+    if (!Array.isArray(data)) {
+      data = [data];
+    }
+
+    if (!data || data.length === 0 || data[0] == null) {
+      resultArea.innerHTML = `<div class="empty">No records were found.</div>`;
+      return;
+    }
+
+    let html = "<table><thead><tr>";
+    for (const col of columns) {
+      html += `<th>${col.label}</th>`;
+    }
+    html += "</tr></thead><tbody>";
+
+    for (const row of data) {
+      html += "<tr>";
+      for (const col of columns) {
+        const value = row[col.key] ?? "";
+        html += `<td>${value}</td>`;
+      }
+      html += "</tr>";
+    }
+
+    html += "</tbody></table>";
+    resultArea.innerHTML = html;
+  }
+
+  function renderUsers(data) {
+    renderTable(data, [
+      { key: "userId", label: "User ID" },
+      { key: "email", label: "Email" },
+      { key: "fullName", label: "Full Name" },
+      { key: "createdAt", label: "Created At" }
+    ]);
+  }
+
+  function renderHabits(data) {
+    renderTable(data, [
+      { key: "habitId", label: "Habit ID" },
+      { key: "userId", label: "User ID" },
+      { key: "name", label: "Habit Name" },
+      { key: "unit", label: "Unit" },
+      { key: "targetValue", label: "Target Value" },
+      { key: "active", label: "Active" }
+    ]);
+  }
+
+  function renderDailyLogs(data) {
+    renderTable(data, [
+      { key: "dailyLogId", label: "Daily Log ID" },
+      { key: "userId", label: "User ID" },
+      { key: "logDate", label: "Log Date" },
+      { key: "sleepHours", label: "Sleep Hours" },
+      { key: "moodRating", label: "Mood Rating" },
+      { key: "stressLevel", label: "Stress Level" },
+      { key: "energyLevel", label: "Energy Level" },
+      { key: "notes", label: "Notes" }
+    ]);
+  }
+
+  function renderHabitEntries(data) {
+    renderTable(data, [
+      { key: "habitEntryId", label: "Habit Entry ID" },
+      { key: "dailyLogId", label: "Daily Log ID" },
+      { key: "habitId", label: "Habit ID" },
+      { key: "completed", label: "Completed" },
+      { key: "actualValue", label: "Actual Value" },
+      { key: "entryNote", label: "Entry Note" }
+    ]);
+  }
+
+  function getAllUsers() {
+    fetchData(`${API}/users?limit=50`, "All Users", renderUsers);
+  }
+
   function getUserById() {
     const id = document.getElementById("userId").value.trim();
-    call(`${API}/users/${id}`);
+    fetchData(`${API}/users/${id}`, `User ID ${id}`, renderUsers);
   }
-  function getUsersSubset() { call(`${API}/users?limit=5`); }
 
-  // HABITS
-  function getAllHabits() { call(`${API}/habits?limit=50`); }
+  function getUsersSubset() {
+    fetchData(`${API}/users?limit=5`, "First 5 Users", renderUsers);
+  }
+
+  function getAllHabits() {
+    fetchData(`${API}/habits?limit=50`, "All Habits", renderHabits);
+  }
+
   function getHabitById() {
     const id = document.getElementById("habitId").value.trim();
-    call(`${API}/habits/${id}`);
+    fetchData(`${API}/habits/${id}`, `Habit ID ${id}`, renderHabits);
   }
+
   function getHabitsByUser() {
     const userId = document.getElementById("habitId").value.trim();
-    call(`${API}/users/${userId}/habits`);
+    fetchData(`${API}/users/${userId}/habits`, `Habits for User ${userId}`, renderHabits);
   }
 
-  // DAILY LOGS
-  function getAllDailyLogs() { call(`${API}/dailyLogs?limit=50`); }
+  function getAllDailyLogs() {
+    fetchData(`${API}/dailyLogs?limit=50`, "All Daily Logs", renderDailyLogs);
+  }
+
   function getDailyLogById() {
     const id = document.getElementById("dailyLogId").value.trim();
-    call(`${API}/dailyLogs/${id}`);
-  }
-  function getDailyLogsByUser() {
-    const userId = document.getElementById("dailyLogId").value.trim();
-    call(`${API}/users/${userId}/dailyLogs`);
+    fetchData(`${API}/dailyLogs/${id}`, `Daily Log ID ${id}`, renderDailyLogs);
   }
 
-  // HABIT ENTRIES
-  function getAllHabitEntries() { call(`${API}/habitEntries?limit=50`); }
+  function getDailyLogsByUser() {
+    const userId = document.getElementById("dailyLogId").value.trim();
+    fetchData(`${API}/users/${userId}/dailyLogs`, `Daily Logs for User ${userId}`, renderDailyLogs);
+  }
+
+  function getAllHabitEntries() {
+    fetchData(`${API}/habitEntries?limit=50`, "All Habit Entries", renderHabitEntries);
+  }
+
   function getHabitEntryById() {
     const id = document.getElementById("entryId").value.trim();
-    call(`${API}/habitEntries/${id}`);
+    fetchData(`${API}/habitEntries/${id}`, `Habit Entry ID ${id}`, renderHabitEntries);
   }
+
   function getEntriesByDailyLog() {
     const dailyLogId = document.getElementById("entryId").value.trim();
-    call(`${API}/dailyLogs/${dailyLogId}/habitEntries`);
+    fetchData(`${API}/dailyLogs/${dailyLogId}/habitEntries`, `Habit Entries for Daily Log ${dailyLogId}`, renderHabitEntries);
   }
 </script>
 </body>
