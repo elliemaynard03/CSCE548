@@ -6,9 +6,9 @@
   <title>Wellness Tracker Client</title>
   <style>
     :root {
-      --bg: #f5f7fb;
+      --bg: #f6f8fc;
       --card: #ffffff;
-      --border: #d9dfeb;
+      --border: #dbe2ee;
       --text: #1f2937;
       --muted: #6b7280;
       --blue: #2563eb;
@@ -17,6 +17,12 @@
       --red-dark: #b91c1c;
       --gray: #64748b;
       --gray-dark: #475569;
+      --green-bg: #ecfdf5;
+      --green-border: #a7f3d0;
+      --green-text: #065f46;
+      --red-bg: #fef2f2;
+      --red-border: #fecaca;
+      --red-text: #991b1b;
       --shadow: 0 8px 24px rgba(15, 23, 42, 0.06);
       --radius: 14px;
     }
@@ -31,14 +37,14 @@
     }
 
     .page {
-      max-width: 1200px;
+      max-width: 1100px;
       margin: 0 auto;
       padding: 24px;
     }
 
     h1 {
       margin: 0 0 8px 0;
-      font-size: 42px;
+      font-size: 40px;
     }
 
     .subtitle {
@@ -47,50 +53,28 @@
       font-size: 18px;
     }
 
-    .topbar {
-      display: flex;
-      justify-content: space-between;
-      align-items: flex-start;
-      gap: 16px;
-      flex-wrap: wrap;
-      margin-bottom: 18px;
-    }
-
-    .card, .info-box {
+    .card {
       background: var(--card);
       border: 1px solid var(--border);
       border-radius: var(--radius);
       box-shadow: var(--shadow);
-    }
-
-    .info-box {
-      padding: 14px 16px;
-      margin-bottom: 18px;
-    }
-
-    .info-box strong {
-      display: block;
-      margin-bottom: 6px;
-    }
-
-    .card {
       padding: 18px;
       margin-bottom: 18px;
     }
 
     .card h2 {
       margin: 0 0 8px 0;
-      font-size: 32px;
+      font-size: 30px;
     }
 
     .card h3 {
       margin: 0 0 10px 0;
-      font-size: 22px;
+      font-size: 21px;
     }
 
     .section-note {
       color: var(--muted);
-      font-size: 15px;
+      font-size: 14px;
       margin-bottom: 12px;
     }
 
@@ -108,7 +92,7 @@
     input, textarea {
       width: 100%;
       padding: 11px 12px;
-      border: 1px solid #cfd6e4;
+      border: 1px solid #cfd8e7;
       border-radius: 10px;
       font-size: 15px;
       background: white;
@@ -139,14 +123,6 @@
 
     button:hover { background: var(--blue-dark); }
 
-    button.danger {
-      background: var(--red);
-    }
-
-    button.danger:hover {
-      background: var(--red-dark);
-    }
-
     button.secondary {
       background: var(--gray);
     }
@@ -155,8 +131,12 @@
       background: var(--gray-dark);
     }
 
-    .hidden {
-      display: none;
+    button.danger {
+      background: var(--red);
+    }
+
+    button.danger:hover {
+      background: var(--red-dark);
     }
 
     .list {
@@ -187,7 +167,7 @@
 
     .item-title {
       font-weight: 700;
-      font-size: 18px;
+      font-size: 17px;
       margin-bottom: 4px;
     }
 
@@ -195,6 +175,12 @@
       color: var(--muted);
       font-size: 14px;
       line-height: 1.45;
+    }
+
+    .empty {
+      color: var(--muted);
+      font-style: italic;
+      padding: 8px 0;
     }
 
     .pill {
@@ -208,10 +194,8 @@
       margin-top: 6px;
     }
 
-    .empty {
-      color: var(--muted);
-      font-style: italic;
-      padding: 8px 0;
+    .hidden {
+      display: none;
     }
 
     .status {
@@ -224,16 +208,16 @@
 
     .status.success {
       display: block;
-      background: #ecfdf5;
-      color: #065f46;
-      border: 1px solid #a7f3d0;
+      background: var(--green-bg);
+      color: var(--green-text);
+      border: 1px solid var(--green-border);
     }
 
     .status.error {
       display: block;
-      background: #fef2f2;
-      color: #991b1b;
-      border: 1px solid #fecaca;
+      background: var(--red-bg);
+      color: var(--red-text);
+      border: 1px solid var(--red-border);
     }
 
     .subtle-box {
@@ -242,7 +226,7 @@
       padding: 16px;
       color: var(--muted);
       background: #fafcff;
-      margin-top: 12px;
+      margin-bottom: 18px;
     }
 
     .checklist {
@@ -286,6 +270,12 @@
       font-weight: 700;
     }
 
+    .inline-note {
+      color: var(--muted);
+      font-size: 13px;
+      margin-top: 6px;
+    }
+
     .table-wrap {
       overflow-x: auto;
       margin-top: 10px;
@@ -314,49 +304,28 @@
       letter-spacing: .02em;
     }
 
-    .muted {
-      color: var(--muted);
-      font-size: 13px;
-    }
-
-    @media (max-width: 850px) {
+    @media (max-width: 800px) {
       .form-grid {
         grid-template-columns: 1fr;
       }
 
       h1 {
-        font-size: 34px;
+        font-size: 32px;
       }
 
       .card h2 {
-        font-size: 28px;
-      }
-
-      .check-item {
-        align-items: flex-start;
+        font-size: 26px;
       }
     }
   </style>
 </head>
 <body>
   <div class="page">
-    <div class="topbar">
-      <div>
-        <h1>Wellness Tracker Client</h1>
-        <div class="subtitle">Simple flow: User → Habits → Daily Logs → Completed / Incomplete</div>
-      </div>
+    <h1>Wellness Tracker Client</h1>
+    <div class="subtitle">Simple flow: User → Habits → Daily Logs → Completed / Incomplete</div>
 
-      <div class="info-box">
-        <strong>API Base</strong>
-        <div id="apiBaseText"></div>
-      </div>
-    </div>
-
-    <div class="info-box">
-      <strong>How this version works</strong>
-      <div>
-        IDs are auto-created by the database. You never type IDs manually. Select a user, create habits for that user, create a daily log, then mark each habit completed or incomplete for that day.
-      </div>
+    <div class="subtle-box">
+      Start by creating or selecting a user. IDs are assigned automatically by the database. You only type the simple fields, and the rest is filled in behind the scenes.
     </div>
 
     <div class="card">
@@ -370,6 +339,7 @@
 
       <div class="btn-row">
         <button onclick="createUser()">Create User</button>
+        <button onclick="updateSelectedUser()">Update Selected User</button>
         <button class="danger" onclick="deleteSelectedUser()">Delete Selected User</button>
         <button class="secondary" onclick="loadUsers()">Refresh Users</button>
       </div>
@@ -382,8 +352,8 @@
         <h2>Selected User</h2>
         <div id="selectedUserSummary" class="section-note">No user selected.</div>
 
-        <h3>Habits for Selected User</h3>
-        <div class="section-note">Only habit name and unit are needed. IDs are assigned automatically.</div>
+        <h3>Habits</h3>
+        <div class="section-note">Only habit name and unit are entered. Default values are sent automatically for the rest.</div>
 
         <div class="form-grid">
           <input id="habitName" placeholder="Habit Name" />
@@ -396,14 +366,15 @@
           <button class="secondary" onclick="loadHabitsForSelectedUser()">Refresh Habits</button>
         </div>
 
+        <div class="inline-note">Select a habit if you want to delete it.</div>
         <div id="habitsList" class="list"></div>
       </div>
 
       <div class="card">
-        <h2>Daily Logs for Selected User</h2>
-        <div class="section-note">Create a daily log, then select it to mark habits completed or incomplete.</div>
+        <h2>Daily Logs</h2>
+        <div class="section-note">Create a daily log with just date and notes. The other fields are sent automatically as blank values.</div>
 
-        <div class="form-grid">
+        <div class="form-grid single">
           <input id="dailyLogDate" placeholder="YYYY-MM-DD" />
         </div>
 
@@ -418,6 +389,7 @@
           <button class="secondary" onclick="loadDailyLogsForSelectedUser()">Refresh Daily Logs</button>
         </div>
 
+        <div class="inline-note">Select a daily log to open its habit checklist.</div>
         <div id="dailyLogsList" class="list"></div>
       </div>
     </div>
@@ -442,8 +414,7 @@
 
     <div id="statusMessage" class="status"></div>
 
-    <!-- Hidden so JS can still write to resultsBody without breaking the page -->
-    <div class="card hidden">
+    <div class="card">
       <h2>Last API Response</h2>
       <div class="section-note">Helpful for testing and screenshots.</div>
       <div class="table-wrap">
@@ -464,8 +435,6 @@
   <script>
     const BASE = "https://wellness-tracker-y1s5.onrender.com";
     const API = BASE + "/api";
-
-    document.getElementById("apiBaseText").textContent = BASE;
 
     let selectedUser = null;
     let selectedHabit = null;
@@ -506,9 +475,8 @@
 
     function showResults(data) {
       const tbody = document.getElementById("resultsBody");
-      if (!tbody) return;
-
       tbody.innerHTML = "";
+
       const rows = Array.isArray(data) ? data : [data];
 
       if (!rows.length) {
@@ -533,7 +501,9 @@
         headers: { "Content-Type": "application/json" }
       };
 
-      if (body) options.body = JSON.stringify(body);
+      if (body) {
+        options.body = JSON.stringify(body);
+      }
 
       const response = await fetch(url, options);
       const text = await response.text();
@@ -570,6 +540,34 @@
       document.getElementById("entriesFlowSection").classList.add("hidden");
     }
 
+    function getUserId(user) {
+      return user.userId ?? user.user_id;
+    }
+
+    function getUserName(user) {
+      return user.fullName ?? user.full_name ?? "Unnamed User";
+    }
+
+    function getHabitId(habit) {
+      return habit.habitId ?? habit.habit_id;
+    }
+
+    function getDailyLogId(log) {
+      return log.dailyLogId ?? log.daily_log_id;
+    }
+
+    function getDailyLogDate(log) {
+      return log.logDate ?? log.log_date ?? "";
+    }
+
+    function getEntryId(entry) {
+      return entry.habitEntryId ?? entry.habit_entry_id;
+    }
+
+    function getEntryHabitId(entry) {
+      return entry.habitId ?? entry.habit_id;
+    }
+
     async function loadUsers() {
       try {
         const users = await apiRequest(`${API}/users`);
@@ -590,8 +588,8 @@
       }
 
       users.forEach(user => {
-        const userId = user.userId || user.user_id;
-        const fullName = user.fullName || user.full_name || "Unnamed User";
+        const userId = getUserId(user);
+        const fullName = getUserName(user);
         const email = user.email || "";
 
         const div = document.createElement("div");
@@ -612,9 +610,9 @@
 
     async function selectUser(user) {
       selectedUser = {
-        userId: user.userId || user.user_id,
-        fullName: user.fullName || user.full_name,
-        email: user.email || ""
+        userId: getUserId(user),
+        email: user.email || "",
+        fullName: getUserName(user)
       };
 
       selectedHabit = null;
@@ -644,7 +642,7 @@
       hideEntriesFlow();
 
       document.getElementById("nextStepMessage").classList.remove("hidden");
-      document.getElementById("nextStepMessage").textContent = "Select a daily log to mark habits completed or incomplete.";
+      document.getElementById("nextStepMessage").textContent = "Select a daily log to open the habit checklist.";
 
       await loadUsers();
       await loadHabitsForSelectedUser();
@@ -665,11 +663,43 @@
         setStatus("User created successfully.");
         await loadUsers();
 
-        if (created && (created.userId || created.user_id)) {
+        if (created) {
           await selectUser(created);
         }
       } catch (err) {
         setStatus(`Create user failed: ${err.message}`, true);
+      }
+    }
+
+    async function updateSelectedUser() {
+      try {
+        if (!selectedUser) {
+          setStatus("Select a user first.", true);
+          return;
+        }
+
+        const email = requireValue("userEmail", "Email");
+        const fullName = requireValue("userFullName", "Full Name");
+        if (!email || !fullName) return;
+
+        await apiRequest(`${API}/users/${selectedUser.userId}`, "PUT", {
+          email,
+          fullName
+        });
+
+        selectedUser.email = email;
+        selectedUser.fullName = fullName;
+
+        document.getElementById("selectedUserSummary").innerHTML = `
+          <strong>${escapeHtml(selectedUser.fullName)}</strong><br>
+          Email: ${escapeHtml(selectedUser.email)}<br>
+          <span class="pill">Selected User ID: ${selectedUser.userId}</span>
+        `;
+
+        setStatus("Selected user updated successfully.");
+        await loadUsers();
+      } catch (err) {
+        setStatus(`Update user failed: ${err.message}`, true);
       }
     }
 
@@ -736,16 +766,19 @@
       }
 
       habits.forEach(habit => {
-        const habitId = habit.habitId || habit.habit_id;
+        const habitId = getHabitId(habit);
+        const name = habit.name || "";
+        const unit = habit.unit || "";
+
         const div = document.createElement("div");
         div.className = "list-item" + (selectedHabit && selectedHabit.habitId == habitId ? " active" : "");
         div.onclick = () => selectHabit(habit);
 
         div.innerHTML = `
-          <div class="item-title">${escapeHtml(habit.name || "")}</div>
+          <div class="item-title">${escapeHtml(name)}</div>
           <div class="item-sub">
             Habit ID: ${habitId}<br>
-            Unit: ${escapeHtml(habit.unit || "")}
+            Unit: ${escapeHtml(unit)}
           </div>
         `;
 
@@ -755,7 +788,7 @@
 
     function selectHabit(habit) {
       selectedHabit = {
-        habitId: habit.habitId || habit.habit_id,
+        habitId: getHabitId(habit),
         name: habit.name || "",
         unit: habit.unit || ""
       };
@@ -781,22 +814,21 @@
           name,
           unit,
           targetValue: null,
-          isActive: true,
-          active: true
+          isActive: true
         });
 
-        setStatus("Habit created successfully.");
         document.getElementById("habitName").value = "";
         document.getElementById("habitUnit").value = "";
         selectedHabit = null;
 
+        setStatus("Habit created successfully.");
         await loadHabitsForSelectedUser();
 
         if (selectedDailyLog) {
           await loadChecklist();
         }
 
-        if (created && (created.habitId || created.habit_id)) {
+        if (created) {
           selectHabit(created);
         }
       } catch (err) {
@@ -812,6 +844,7 @@
         }
 
         await apiRequest(`${API}/habits/${selectedHabit.habitId}`, "DELETE");
+
         selectedHabit = null;
         document.getElementById("habitName").value = "";
         document.getElementById("habitUnit").value = "";
@@ -850,8 +883,9 @@
       }
 
       logs.forEach(log => {
-        const logId = log.dailyLogId || log.daily_log_id;
-        const logDate = log.logDate || log.log_date || "No Date";
+        const logId = getDailyLogId(log);
+        const logDate = getDailyLogDate(log);
+        const notes = log.notes || "";
 
         const div = document.createElement("div");
         div.className = "list-item" + (selectedDailyLog && selectedDailyLog.dailyLogId == logId ? " active" : "");
@@ -861,7 +895,7 @@
           <div class="item-title">${escapeHtml(logDate)}</div>
           <div class="item-sub">
             Daily Log ID: ${logId}<br>
-            Notes: ${(log.notes || "").trim() ? escapeHtml(log.notes) : "No notes"}
+            Notes: ${notes ? escapeHtml(notes) : "No notes"}
           </div>
         `;
 
@@ -871,8 +905,8 @@
 
     async function selectDailyLog(log) {
       selectedDailyLog = {
-        dailyLogId: log.dailyLogId || log.daily_log_id,
-        logDate: log.logDate || log.log_date || "",
+        dailyLogId: getDailyLogId(log),
+        logDate: getDailyLogDate(log),
         notes: log.notes || ""
       };
 
@@ -916,7 +950,7 @@
         setStatus("Daily log created successfully.");
         await loadDailyLogsForSelectedUser();
 
-        if (created && (created.dailyLogId || created.daily_log_id)) {
+        if (created) {
           await selectDailyLog(created);
         }
       } catch (err) {
@@ -967,14 +1001,14 @@
         selectedDailyLog = null;
         currentEntries = [];
         checklistState = [];
-        document.getElementById("checklistContainer").innerHTML = "";
         document.getElementById("dailyLogDate").value = "";
         document.getElementById("dailyLogNotes").value = "";
+        document.getElementById("checklistContainer").innerHTML = "";
         document.getElementById("selectedLogSummary").textContent = "No daily log selected.";
 
         hideEntriesFlow();
         document.getElementById("nextStepMessage").classList.remove("hidden");
-        document.getElementById("nextStepMessage").textContent = "Select a daily log to mark habits completed or incomplete.";
+        document.getElementById("nextStepMessage").textContent = "Select a daily log to open the habit checklist.";
 
         setStatus("Selected daily log deleted successfully.");
         await loadDailyLogsForSelectedUser();
@@ -995,21 +1029,21 @@
     }
 
     async function loadChecklist() {
-      if (!selectedDailyLog || !selectedUser) return;
+      if (!selectedUser || !selectedDailyLog) return;
 
       await loadHabitsForSelectedUser();
       await loadEntriesForSelectedDailyLog();
 
       checklistState = currentHabits.map(habit => {
-        const habitId = habit.habitId || habit.habit_id;
-        const matchingEntry = currentEntries.find(entry => (entry.habitId || entry.habit_id) == habitId);
+        const habitId = getHabitId(habit);
+        const entry = currentEntries.find(e => getEntryHabitId(e) == habitId);
 
         return {
           habitId,
-          habitName: habit.name || "",
+          name: habit.name || "",
           unit: habit.unit || "",
-          completed: matchingEntry ? !!matchingEntry.completed : false,
-          habitEntryId: matchingEntry ? (matchingEntry.habitEntryId || matchingEntry.habit_entry_id) : null
+          completed: entry ? !!entry.completed : false,
+          habitEntryId: entry ? getEntryId(entry) : null
         };
       });
 
@@ -1031,7 +1065,7 @@
 
         div.innerHTML = `
           <div class="check-left">
-            <div class="check-title">${escapeHtml(item.habitName)}</div>
+            <div class="check-title">${escapeHtml(item.name)}</div>
             <div class="check-sub">
               Habit ID: ${item.habitId} • Unit: ${escapeHtml(item.unit)}
             </div>
@@ -1059,11 +1093,19 @@
         }
 
         if (!checklistState.length) {
-          setStatus("There are no habits to save for this daily log.", true);
+          setStatus("No habits are available for this daily log.", true);
           return;
         }
 
         for (const item of checklistState) {
+          const payload = {
+            dailyLogId: selectedDailyLog.dailyLogId,
+            habitId: item.habitId,
+            completed: item.completed,
+            actualValue: null,
+            note: ""
+          };
+
           if (item.habitEntryId) {
             await apiRequest(`${API}/habitEntries/${item.habitEntryId}`, "PUT", {
               completed: item.completed,
@@ -1071,16 +1113,9 @@
               note: ""
             });
           } else {
-            const created = await apiRequest(`${API}/habitEntries`, "POST", {
-              dailyLogId: selectedDailyLog.dailyLogId,
-              habitId: item.habitId,
-              completed: item.completed,
-              actualValue: null,
-              note: ""
-            });
-
-            if (created && (created.habitEntryId || created.habit_entry_id)) {
-              item.habitEntryId = created.habitEntryId || created.habit_entry_id;
+            const created = await apiRequest(`${API}/habitEntries`, "POST", payload);
+            if (created) {
+              item.habitEntryId = getEntryId(created);
             }
           }
         }
