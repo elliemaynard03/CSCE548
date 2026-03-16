@@ -43,27 +43,30 @@ public class ApiServer {
         int port = 7070;
         String envPort = System.getenv("PORT");
         if (envPort != null) {
-            try { port = Integer.parseInt(envPort); } catch (Exception ignored) {}
+            try {
+                port = Integer.parseInt(envPort);
+            } catch (Exception ignored) {
+            }
         }
 
         Javalin app = Javalin.create(config -> config.http.defaultContentType = "application/json");
-            
-        // ----------------------------
-// CORS (for GitHub Pages client)
-// ----------------------------
-app.before(ctx -> {
-    ctx.header("Access-Control-Allow-Origin", "*");
-    ctx.header("Access-Control-Allow-Methods", "GET,POST,PUT,DELETE,OPTIONS");
-    ctx.header("Access-Control-Allow-Headers", "Content-Type, Authorization");
-});
 
-// Handle preflight requests
-app.options("/*", ctx -> {
-    ctx.header("Access-Control-Allow-Origin", "*");
-    ctx.header("Access-Control-Allow-Methods", "GET,POST,PUT,DELETE,OPTIONS");
-    ctx.header("Access-Control-Allow-Headers", "Content-Type, Authorization");
-    ctx.status(204);
-});
+        // ----------------------------
+        // CORS (for GitHub Pages client)
+        // ----------------------------
+        app.before(ctx -> {
+            ctx.header("Access-Control-Allow-Origin", "*");
+            ctx.header("Access-Control-Allow-Methods", "GET,POST,PUT,DELETE,OPTIONS");
+            ctx.header("Access-Control-Allow-Headers", "Content-Type, Authorization");
+        });
+
+        // Handle preflight requests
+        app.options("/*", ctx -> {
+            ctx.header("Access-Control-Allow-Origin", "*");
+            ctx.header("Access-Control-Allow-Methods", "GET,POST,PUT,DELETE,OPTIONS");
+            ctx.header("Access-Control-Allow-Headers", "Content-Type, Authorization");
+            ctx.status(204);
+        });
 
         // Global error handling -> JSON
         app.exception(IllegalArgumentException.class, (e, ctx) ->
@@ -76,7 +79,6 @@ app.options("/*", ctx -> {
             ctx.status(status).result(gson.toJson(new ErrorResponse(msg)));
         });
 
-        // If a DAO throws SQLException, Javalin will treat it as Exception; return 500 with message
         app.exception(Exception.class, (e, ctx) ->
                 ctx.status(500).result(gson.toJson(new ErrorResponse(e.getMessage())))
         );
@@ -98,12 +100,14 @@ app.options("/*", ctx -> {
         });
 
         // GET /api/users?limit=50
-app.get("/api/users", ctx -> {
-    int limit = 50;
-    String limitStr = ctx.queryParam("limit");
-    if (limitStr != null) limit = Integer.parseInt(limitStr);
-    ctx.result(gson.toJson(userManager.getAll(limit)));
-});
+        app.get("/api/users", ctx -> {
+            int limit = 50;
+            String limitStr = ctx.queryParam("limit");
+            if (limitStr != null) {
+                limit = Integer.parseInt(limitStr);
+            }
+            ctx.result(gson.toJson(userManager.getAll(limit)));
+        });
 
         // GET /api/users/{id}
         app.get("/api/users/{id}", ctx -> {
@@ -111,12 +115,15 @@ app.get("/api/users", ctx -> {
             ctx.result(gson.toJson(userManager.getById(id)));
         });
 
-        // PUT /api/users/{id}/name  body: {"fullName":"New Name"}
-        app.put("/api/users/{id}/name", ctx -> {
+        // PUT /api/users/{id}  body: {"email":"a@b.com","fullName":"New Name"}
+        app.put("/api/users/{id}", ctx -> {
             int id = Integer.parseInt(ctx.pathParam("id"));
             Map<?, ?> body = gson.fromJson(ctx.body(), Map.class);
+
+            String email = body.get("email") == null ? null : body.get("email").toString();
             String fullName = body.get("fullName") == null ? null : body.get("fullName").toString();
-            userManager.updateName(id, fullName);
+
+            userManager.update(id, email, fullName);
             ctx.status(204);
         });
 
@@ -139,12 +146,14 @@ app.get("/api/users", ctx -> {
         });
 
         // GET /api/habits?limit=200
-app.get("/api/habits", ctx -> {
-    int limit = 200;
-    String limitStr = ctx.queryParam("limit");
-    if (limitStr != null) limit = Integer.parseInt(limitStr);
-    ctx.result(gson.toJson(habitManager.getAll(limit)));
-});
+        app.get("/api/habits", ctx -> {
+            int limit = 200;
+            String limitStr = ctx.queryParam("limit");
+            if (limitStr != null) {
+                limit = Integer.parseInt(limitStr);
+            }
+            ctx.result(gson.toJson(habitManager.getAll(limit)));
+        });
 
         // GET /api/users/{userId}/habits (subset)
         app.get("/api/users/{userId}/habits", ctx -> {
@@ -196,12 +205,14 @@ app.get("/api/habits", ctx -> {
         });
 
         // GET /api/dailyLogs?limit=200
-app.get("/api/dailyLogs", ctx -> {
-    int limit = 200;
-    String limitStr = ctx.queryParam("limit");
-    if (limitStr != null) limit = Integer.parseInt(limitStr);
-    ctx.result(gson.toJson(dailyLogManager.getAll(limit)));
-});
+        app.get("/api/dailyLogs", ctx -> {
+            int limit = 200;
+            String limitStr = ctx.queryParam("limit");
+            if (limitStr != null) {
+                limit = Integer.parseInt(limitStr);
+            }
+            ctx.result(gson.toJson(dailyLogManager.getAll(limit)));
+        });
 
         // GET /api/users/{userId}/dailyLogs (subset)
         app.get("/api/users/{userId}/dailyLogs", ctx -> {
@@ -250,12 +261,14 @@ app.get("/api/dailyLogs", ctx -> {
         });
 
         // GET /api/habitEntries?limit=500
-app.get("/api/habitEntries", ctx -> {
-    int limit = 500;
-    String limitStr = ctx.queryParam("limit");
-    if (limitStr != null) limit = Integer.parseInt(limitStr);
-    ctx.result(gson.toJson(habitEntryManager.getAll(limit)));
-});
+        app.get("/api/habitEntries", ctx -> {
+            int limit = 500;
+            String limitStr = ctx.queryParam("limit");
+            if (limitStr != null) {
+                limit = Integer.parseInt(limitStr);
+            }
+            ctx.result(gson.toJson(habitEntryManager.getAll(limit)));
+        });
 
         // GET /api/dailyLogs/{dailyLogId}/habitEntries (subset)
         app.get("/api/dailyLogs/{dailyLogId}/habitEntries", ctx -> {
@@ -275,7 +288,8 @@ app.get("/api/habitEntries", ctx -> {
             int id = Integer.parseInt(ctx.pathParam("id"));
             Map<?, ?> body = gson.fromJson(ctx.body(), Map.class);
 
-            boolean completed = body.get("completed") != null && Boolean.parseBoolean(body.get("completed").toString());
+            boolean completed = body.get("completed") != null
+                    && Boolean.parseBoolean(body.get("completed").toString());
 
             Double actualValue = null;
             if (body.get("actualValue") != null && !body.get("actualValue").toString().isBlank()) {

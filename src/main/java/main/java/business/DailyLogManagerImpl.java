@@ -16,34 +16,53 @@ public class DailyLogManagerImpl implements DailyLogManager {
 
     @Override
     public DailyLog create(DailyLog log) throws SQLException {
-        if (log == null) throw new IllegalArgumentException("DailyLog cannot be null");
-        if (log.getUserId() <= 0) throw new IllegalArgumentException("userId must be positive");
-        if (log.getLogDate() == null) throw new IllegalArgumentException("logDate is required");
+        if (log == null) {
+            throw new IllegalArgumentException("DailyLog is required");
+        }
+
+        if (log.getUserId() <= 0) {
+            throw new IllegalArgumentException("userId must be positive");
+        }
 
         DailyLog created = dailyLogDAO.create(log);
-        if (created == null) throw new RuntimeException("Failed to create DailyLog");
+
+        if (created == null) {
+            throw new RuntimeException("Failed to create DailyLog");
+        }
+
         return created;
     }
 
     @Override
     public DailyLog getById(int id) throws SQLException {
-        if (id <= 0) throw new IllegalArgumentException("id must be positive");
+        if (id <= 0) {
+            throw new IllegalArgumentException("dailyLogId must be positive");
+        }
 
         DailyLog found = dailyLogDAO.getById(id);
-        if (found == null) throw new RuntimeException("DailyLog not found: " + id);
+
+        if (found == null) {
+            throw new RuntimeException("DailyLog not found: " + id);
+        }
+
         return found;
     }
 
-    // NEW ✅
     @Override
     public List<DailyLog> getAll(int limit) throws SQLException {
-        if (limit <= 0) throw new IllegalArgumentException("limit must be positive");
+        if (limit <= 0) {
+            throw new IllegalArgumentException("limit must be positive");
+        }
+
         return dailyLogDAO.getAll(limit);
     }
 
     @Override
     public List<DailyLog> getByUser(int userId) throws SQLException {
-        if (userId <= 0) throw new IllegalArgumentException("userId must be positive");
+        if (userId <= 0) {
+            throw new IllegalArgumentException("userId must be positive");
+        }
+
         return dailyLogDAO.getByUser(userId);
     }
 
@@ -54,19 +73,39 @@ public class DailyLogManagerImpl implements DailyLogManager {
                                  Integer stress,
                                  Integer energy,
                                  String notes) throws SQLException {
-        if (dailyLogId <= 0) throw new IllegalArgumentException("dailyLogId must be positive");
 
-        boolean ok = dailyLogDAO.updateRatings(dailyLogId, sleepHours, mood, stress, energy, notes);
-        if (!ok) throw new RuntimeException("DailyLog not found for update: " + dailyLogId);
+        if (dailyLogId <= 0) {
+            throw new IllegalArgumentException("dailyLogId must be positive");
+        }
+
+        boolean ok = dailyLogDAO.updateRatings(
+                dailyLogId,
+                sleepHours,
+                mood,
+                stress,
+                energy,
+                notes
+        );
+
+        if (!ok) {
+            throw new RuntimeException("DailyLog not found for update: " + dailyLogId);
+        }
+
         return true;
     }
 
     @Override
     public boolean delete(int id) throws SQLException {
-        if (id <= 0) throw new IllegalArgumentException("id must be positive");
+        if (id <= 0) {
+            throw new IllegalArgumentException("dailyLogId must be positive");
+        }
 
         boolean ok = dailyLogDAO.delete(id);
-        if (!ok) throw new RuntimeException("DailyLog not found for delete: " + id);
+
+        if (!ok) {
+            throw new RuntimeException("DailyLog not found for delete: " + id);
+        }
+
         return true;
     }
 }

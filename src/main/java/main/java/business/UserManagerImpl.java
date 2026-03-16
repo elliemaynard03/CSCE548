@@ -16,45 +16,70 @@ public class UserManagerImpl implements UserManager {
 
     @Override
     public AppUser create(String email, String fullName) throws SQLException {
-        if (email == null || email.isBlank()) throw new IllegalArgumentException("email is required");
-        if (fullName == null || fullName.isBlank()) throw new IllegalArgumentException("fullName is required");
+        if (email == null || email.isBlank()) {
+            throw new IllegalArgumentException("email is required");
+        }
+        if (fullName == null || fullName.isBlank()) {
+            throw new IllegalArgumentException("fullName is required");
+        }
 
-        AppUser created = userDAO.create(email, fullName); // ✅ matches DAO
-        if (created == null) throw new RuntimeException("Failed to create user");
+        AppUser created = userDAO.create(email, fullName);
+        if (created == null) {
+            throw new RuntimeException("Failed to create user");
+        }
         return created;
     }
 
     @Override
     public AppUser getById(int userId) throws SQLException {
-        if (userId <= 0) throw new IllegalArgumentException("userId must be positive");
+        if (userId <= 0) {
+            throw new IllegalArgumentException("userId must be positive");
+        }
 
-        AppUser found = userDAO.getById(userId);           // ✅ matches DAO
-        if (found == null) throw new RuntimeException("User not found: " + userId);
+        AppUser found = userDAO.getById(userId);
+        if (found == null) {
+            throw new RuntimeException("User not found: " + userId);
+        }
         return found;
     }
 
     @Override
     public List<AppUser> getAll(int limit) throws SQLException {
-        if (limit <= 0) throw new IllegalArgumentException("limit must be positive");
-        return userDAO.getAll(limit);                      // ✅ matches DAO
+        if (limit <= 0) {
+            throw new IllegalArgumentException("limit must be positive");
+        }
+        return userDAO.getAll(limit);
     }
 
     @Override
-    public boolean updateName(int userId, String fullName) throws SQLException {
-        if (userId <= 0) throw new IllegalArgumentException("userId must be positive");
-        if (fullName == null || fullName.isBlank()) throw new IllegalArgumentException("fullName is required");
+    public boolean update(int userId, String email, String fullName) throws SQLException {
+        if (userId <= 0) {
+            throw new IllegalArgumentException("userId must be positive");
+        }
+        if (email == null || email.isBlank()) {
+            throw new IllegalArgumentException("email is required");
+        }
+        if (fullName == null || fullName.isBlank()) {
+            throw new IllegalArgumentException("fullName is required");
+        }
 
-        boolean ok = userDAO.updateName(userId, fullName); // ✅ matches DAO
-        if (!ok) throw new RuntimeException("User not found for update: " + userId);
+        boolean ok = userDAO.update(userId, email, fullName);
+        if (!ok) {
+            throw new RuntimeException("User not found for update: " + userId);
+        }
         return true;
     }
 
     @Override
     public boolean delete(int userId) throws SQLException {
-        if (userId <= 0) throw new IllegalArgumentException("userId must be positive");
+        if (userId <= 0) {
+            throw new IllegalArgumentException("userId must be positive");
+        }
 
-        boolean ok = userDAO.delete(userId);               // ✅ matches DAO
-        if (!ok) throw new RuntimeException("User not found for delete: " + userId);
+        boolean ok = userDAO.delete(userId);
+        if (!ok) {
+            throw new RuntimeException("User not found for delete: " + userId);
+        }
         return true;
     }
 }

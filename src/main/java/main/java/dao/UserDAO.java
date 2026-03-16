@@ -96,5 +96,21 @@ public class UserDAO {
             return ps.executeUpdate() == 1;
         }
     }
+
+    public boolean update(int userId, String email, String fullName) throws SQLException {
+        String sql = "UPDATE AppUser SET email = ?, full_name = ? WHERE user_id = ?";
+    
+        try (Connection conn = DBConnection.getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql)) {
+    
+            ps.setString(1, email);
+            ps.setString(2, fullName);
+            ps.setInt(3, userId);
+    
+            return ps.executeUpdate() == 1;
+        }
+    }
 }
+
+
 

@@ -8,7 +8,7 @@
     body {
       font-family: Arial, sans-serif;
       padding: 24px;
-      max-width: 1200px;
+      max-width: 1300px;
       margin: 0 auto;
       background: #f7f8fb;
       color: #222;
@@ -55,7 +55,7 @@
 
     .grid {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+      grid-template-columns: repeat(auto-fit, minmax(380px, 1fr));
       gap: 18px;
       margin-bottom: 28px;
     }
@@ -79,18 +79,25 @@
       font-size: 14px;
     }
 
+    .section-label {
+      font-size: 13px;
+      font-weight: bold;
+      color: #444;
+      margin: 14px 0 6px;
+    }
+
     .controls {
       display: flex;
       flex-wrap: wrap;
       gap: 8px;
-      margin-top: 12px;
+      margin-top: 8px;
     }
 
     input {
       padding: 10px 12px;
       border: 1px solid #ccc;
       border-radius: 8px;
-      width: 130px;
+      min-width: 130px;
       font-size: 14px;
     }
 
@@ -106,6 +113,14 @@
 
     button:hover {
       background: #1557b0;
+    }
+
+    .danger {
+      background: #c73939;
+    }
+
+    .danger:hover {
+      background: #a22d2d;
     }
 
     .results {
@@ -155,7 +170,7 @@
       background: #f1f4f8;
     }
 
-    .empty, .error {
+    .empty, .error, .success {
       padding: 14px;
       border-radius: 10px;
       margin-top: 12px;
@@ -171,6 +186,12 @@
       color: #a11;
       border: 1px solid #f2bcbc;
     }
+
+    .success {
+      background: #ebf8ee;
+      color: #166534;
+      border: 1px solid #b7e4c7;
+    }
   </style>
 </head>
 <body>
@@ -178,7 +199,7 @@
     <div>
       <h1>Wellness Tracker Client</h1>
       <div class="subtitle">
-        A simple website for viewing users, habits, daily logs, and habit entries in an easy-to-read format.
+        A simple website for viewing, creating, updating, and deleting users, habits, daily logs, and habit entries in an easy-to-read format.
       </div>
     </div>
     <div class="api-box">
@@ -191,7 +212,7 @@
     <h2>How to Use This Website</h2>
     <p>
       Use the sections below to explore the Wellness Tracker system. You can display all records,
-      search for one record by entering its ID, or view related records for a selected user or daily log.
+      search for one record by entering its ID, create new records, update existing records, and delete records.
     </p>
     <p>
       This page is designed to show information in a clean table format so it is easier for non-technical users to read.
@@ -201,52 +222,123 @@
   <div class="grid">
     <div class="card">
       <h2>Users</h2>
-      <p>View all users, search for a single user by ID, or show the first 5 users.</p>
+      <p>View, create, update, or delete user records.</p>
+
+      <div class="section-label">User Information</div>
       <div class="controls">
         <input id="userId" value="1" placeholder="User ID">
+        <input id="userEmail" placeholder="Email Address">
+        <input id="userFullName" placeholder="Full Name">
+      </div>
+
+      <div class="section-label">Read</div>
+      <div class="controls">
         <button onclick="getAllUsers()">Show All Users</button>
         <button onclick="getUserById()">Find User by ID</button>
         <button onclick="getUsersSubset()">Show First 5 Users</button>
+      </div>
+
+      <div class="section-label">Write</div>
+      <div class="controls">
+        <button onclick="createUser()">Create User</button>
+        <button onclick="updateUser()">Update User</button>
+        <button class="danger" onclick="deleteUser()">Delete User</button>
       </div>
     </div>
 
     <div class="card">
       <h2>Habits</h2>
-      <p>View all habits, search by habit ID, or show all habits that belong to one user.</p>
+      <p>View, create, update, or delete habit records.</p>
+
+      <div class="section-label">Habit Information</div>
       <div class="controls">
-        <input id="habitId" value="1" placeholder="Habit/User ID">
+        <input id="habitId" value="1" placeholder="Habit ID">
+        <input id="habitUserId" placeholder="User ID">
+        <input id="habitName" placeholder="Habit Name">
+        <input id="habitUnit" placeholder="Unit">
+        <input id="habitTargetValue" placeholder="Target Value">
+        <input id="habitActive" placeholder="true or false">
+      </div>
+
+      <div class="section-label">Read</div>
+      <div class="controls">
         <button onclick="getAllHabits()">Show All Habits</button>
         <button onclick="getHabitById()">Find Habit by ID</button>
         <button onclick="getHabitsByUser()">Show Habits for User</button>
+      </div>
+
+      <div class="section-label">Write</div>
+      <div class="controls">
+        <button onclick="createHabit()">Create Habit</button>
+        <button onclick="updateHabit()">Update Habit</button>
+        <button class="danger" onclick="deleteHabit()">Delete Habit</button>
       </div>
     </div>
 
     <div class="card">
       <h2>Daily Logs</h2>
-      <p>View all daily logs, search by daily log ID, or show all daily logs for one user.</p>
+      <p>View, create, update, or delete daily log records.</p>
+
+      <div class="section-label">Daily Log Information</div>
       <div class="controls">
-        <input id="dailyLogId" value="1" placeholder="Log/User ID">
+        <input id="dailyLogId" value="1" placeholder="Daily Log ID">
+        <input id="dailyLogUserId" placeholder="User ID">
+        <input id="dailyLogDate" placeholder="YYYY-MM-DD">
+        <input id="dailyLogSleepHours" placeholder="Sleep Hours">
+        <input id="dailyLogMood" placeholder="Mood Rating">
+        <input id="dailyLogStress" placeholder="Stress Level">
+        <input id="dailyLogEnergy" placeholder="Energy Level">
+        <input id="dailyLogNotes" placeholder="Notes">
+      </div>
+
+      <div class="section-label">Read</div>
+      <div class="controls">
         <button onclick="getAllDailyLogs()">Show All Daily Logs</button>
         <button onclick="getDailyLogById()">Find Daily Log by ID</button>
         <button onclick="getDailyLogsByUser()">Show Logs for User</button>
+      </div>
+
+      <div class="section-label">Write</div>
+      <div class="controls">
+        <button onclick="createDailyLog()">Create Daily Log</button>
+        <button onclick="updateDailyLog()">Update Daily Log</button>
+        <button class="danger" onclick="deleteDailyLog()">Delete Daily Log</button>
       </div>
     </div>
 
     <div class="card">
       <h2>Habit Entries</h2>
-      <p>View all habit entries, search by habit entry ID, or show entries for a selected daily log.</p>
+      <p>View, create, update, or delete habit entry records.</p>
+
+      <div class="section-label">Habit Entry Information</div>
       <div class="controls">
-        <input id="entryId" value="1" placeholder="Entry/Log ID">
+        <input id="entryId" value="1" placeholder="Habit Entry ID">
+        <input id="entryDailyLogId" placeholder="Daily Log ID">
+        <input id="entryHabitId" placeholder="Habit ID">
+        <input id="entryCompleted" placeholder="true or false">
+        <input id="entryActualValue" placeholder="Actual Value">
+        <input id="entryNote" placeholder="Entry Note">
+      </div>
+
+      <div class="section-label">Read</div>
+      <div class="controls">
         <button onclick="getAllHabitEntries()">Show All Habit Entries</button>
         <button onclick="getHabitEntryById()">Find Habit Entry by ID</button>
         <button onclick="getEntriesByDailyLog()">Show Entries for Daily Log</button>
+      </div>
+
+      <div class="section-label">Write</div>
+      <div class="controls">
+        <button onclick="createHabitEntry()">Create Habit Entry</button>
+        <button onclick="updateHabitEntry()">Update Habit Entry</button>
+        <button class="danger" onclick="deleteHabitEntry()">Delete Habit Entry</button>
       </div>
     </div>
   </div>
 
   <div class="results">
     <h2>Results</h2>
-    <div class="status" id="status">Choose an option above to view data.</div>
+    <div class="status" id="status">Choose an option above to view or change data.</div>
     <div id="resultArea" class="empty">No data loaded yet.</div>
   </div>
 
@@ -266,7 +358,8 @@
       const res = await fetch(url);
 
       if (!res.ok) {
-        resultArea.innerHTML = `<div class="error">The request could not be completed. Server returned status ${res.status}.</div>`;
+        const errText = await res.text();
+        resultArea.innerHTML = `<div class="error">The request could not be completed. Server returned status ${res.status}. ${escapeHtml(errText)}</div>`;
         status.textContent = `Unable to display ${title}.`;
         return;
       }
@@ -284,9 +377,69 @@
 
       renderer(data, title, summaryText);
     } catch (e) {
-      resultArea.innerHTML = `<div class="error">Unable to load data. ${e.message}</div>`;
+      resultArea.innerHTML = `<div class="error">Unable to load data. ${escapeHtml(e.message)}</div>`;
       status.textContent = `Error loading ${title}.`;
     }
+  }
+
+  async function sendJson(url, method, body, successMessage, followUp) {
+    const status = document.getElementById("status");
+    const resultArea = document.getElementById("resultArea");
+
+    status.textContent = `${method} request in progress...`;
+    resultArea.innerHTML = '<div class="empty">Processing request, please wait...</div>';
+
+    try {
+      const options = { method, headers: { "Content-Type": "application/json" } };
+      if (body !== null) {
+        options.body = JSON.stringify(body);
+      }
+
+      const res = await fetch(url, options);
+      const text = await res.text();
+
+      if (!res.ok) {
+        let message = text;
+        try {
+          const parsed = JSON.parse(text);
+          if (parsed.message) message = parsed.message;
+        } catch {}
+
+        resultArea.innerHTML = `<div class="error">${escapeHtml(message || "Request failed.")}</div>`;
+        status.textContent = `${method} request failed.`;
+        return;
+      }
+
+      if (followUp) {
+        followUp();
+        return;
+      }
+
+      if (text) {
+        try {
+          const data = JSON.parse(text);
+          renderDetectedData(data, successMessage);
+        } catch {
+          resultArea.innerHTML = `<div class="success">${escapeHtml(successMessage)}</div>`;
+          status.textContent = successMessage;
+        }
+      } else {
+        resultArea.innerHTML = `<div class="success">${escapeHtml(successMessage)}</div>`;
+        status.textContent = successMessage;
+      }
+    } catch (e) {
+      resultArea.innerHTML = `<div class="error">Unable to complete request. ${escapeHtml(e.message)}</div>`;
+      status.textContent = `${method} request failed.`;
+    }
+  }
+
+  function escapeHtml(value) {
+    return String(value)
+      .replaceAll("&", "&amp;")
+      .replaceAll("<", "&lt;")
+      .replaceAll(">", "&gt;")
+      .replaceAll('"', "&quot;")
+      .replaceAll("'", "&#39;");
   }
 
   function normalizeValue(value, key) {
@@ -322,12 +475,12 @@
 
     let html = "";
     if (summaryText) {
-      html += `<div class="summary">${summaryText}</div>`;
+      html += `<div class="summary">${escapeHtml(summaryText)}</div>`;
     }
 
     html += "<table><thead><tr>";
     for (const col of columns) {
-      html += `<th>${col.label}</th>`;
+      html += `<th>${escapeHtml(col.label)}</th>`;
     }
     html += "</tr></thead><tbody>";
 
@@ -335,7 +488,7 @@
       html += "<tr>";
       for (const col of columns) {
         const value = normalizeValue(row[col.key], col.key);
-        html += `<td>${value}</td>`;
+        html += `<td>${escapeHtml(value)}</td>`;
       }
       html += "</tr>";
     }
@@ -388,18 +541,51 @@
     ], title, summaryText);
   }
 
-  function requireId(inputId, label) {
+  function renderDetectedData(data, summary) {
+    if (data.userId !== undefined || data.fullName !== undefined || data.email !== undefined) {
+      renderUsers(data, "user result", summary);
+      return;
+    }
+    if (data.habitId !== undefined && data.name !== undefined) {
+      renderHabits(data, "habit result", summary);
+      return;
+    }
+    if (data.dailyLogId !== undefined || data.logDate !== undefined) {
+      renderDailyLogs(data, "daily log result", summary);
+      return;
+    }
+    if (data.habitEntryId !== undefined || data.actualValue !== undefined) {
+      renderHabitEntries(data, "habit entry result", summary);
+      return;
+    }
+
+    document.getElementById("resultArea").innerHTML = `<div class="success">${escapeHtml(summary)}</div>`;
+    document.getElementById("status").textContent = summary;
+  }
+
+  function requireValue(inputId, label) {
     const value = document.getElementById(inputId).value.trim();
     const resultArea = document.getElementById("resultArea");
     const status = document.getElementById("status");
 
     if (!value) {
-      resultArea.innerHTML = `<div class="error">Please enter a ${label} before continuing.</div>`;
+      resultArea.innerHTML = `<div class="error">Please enter a ${escapeHtml(label)} before continuing.</div>`;
       status.textContent = `Missing ${label}.`;
       return null;
     }
 
     return value;
+  }
+
+  function parseNullableNumber(value) {
+    if (value === null || value === undefined || value.trim() === "") return null;
+    const parsed = Number(value);
+    return Number.isNaN(parsed) ? null : parsed;
+  }
+
+  function parseBoolean(value, defaultValue = false) {
+    if (value === null || value === undefined || value.trim() === "") return defaultValue;
+    return value.trim().toLowerCase() === "true";
   }
 
   function getAllUsers() {
@@ -412,14 +598,14 @@
   }
 
   function getUserById() {
-    const id = requireId("userId", "User ID");
+    const id = requireValue("userId", "User ID");
     if (!id) return;
 
     fetchData(
       `${API}/users/${id}`,
       `user ID ${id}`,
       renderUsers,
-      `This table shows the account information for the selected user.`
+      "This table shows the account information for the selected user."
     );
   }
 
@@ -429,6 +615,46 @@
       "the first 5 users",
       renderUsers,
       "This table shows a smaller sample of user records."
+    );
+  }
+
+  function createUser() {
+    const email = requireValue("userEmail", "Email Address");
+    const fullName = requireValue("userFullName", "Full Name");
+    if (!email || !fullName) return;
+
+    sendJson(
+      `${API}/users`,
+      "POST",
+      { email, fullName },
+      "User created successfully."
+    );
+  }
+
+  function updateUser() {
+    const id = requireValue("userId", "User ID");
+    const email = requireValue("userEmail", "Email Address");
+    const fullName = requireValue("userFullName", "Full Name");
+    if (!id || !email || !fullName) return;
+
+    sendJson(
+      `${API}/users/${id}`,
+      "PUT",
+      { email, fullName },
+      "User updated successfully.",
+      () => getUserById()
+    );
+  }
+
+  function deleteUser() {
+    const id = requireValue("userId", "User ID");
+    if (!id) return;
+
+    sendJson(
+      `${API}/users/${id}`,
+      "DELETE",
+      null,
+      `User ${id} deleted successfully.`
     );
   }
 
@@ -442,7 +668,7 @@
   }
 
   function getHabitById() {
-    const id = requireId("habitId", "Habit ID");
+    const id = requireValue("habitId", "Habit ID");
     if (!id) return;
 
     fetchData(
@@ -454,7 +680,7 @@
   }
 
   function getHabitsByUser() {
-    const userId = requireId("habitId", "User ID");
+    const userId = requireValue("habitUserId", "User ID");
     if (!userId) return;
 
     fetchData(
@@ -462,6 +688,57 @@
       `habits for user ${userId}`,
       renderHabits,
       "This table shows all habits associated with the selected user."
+    );
+  }
+
+  function createHabit() {
+    const userId = requireValue("habitUserId", "User ID");
+    const name = requireValue("habitName", "Habit Name");
+    const unit = requireValue("habitUnit", "Unit");
+    if (!userId || !name || !unit) return;
+
+    const targetValue = parseNullableNumber(document.getElementById("habitTargetValue").value);
+    const active = parseBoolean(document.getElementById("habitActive").value, true);
+
+    sendJson(
+      `${API}/habits`,
+      "POST",
+      {
+        userId: Number(userId),
+        name,
+        unit,
+        targetValue,
+        active
+      },
+      "Habit created successfully."
+    );
+  }
+
+  function updateHabit() {
+    const id = requireValue("habitId", "Habit ID");
+    if (!id) return;
+
+    const targetValue = parseNullableNumber(document.getElementById("habitTargetValue").value);
+    const active = parseBoolean(document.getElementById("habitActive").value, true);
+
+    sendJson(
+      `${API}/habits/${id}/target`,
+      "PUT",
+      { targetValue, active },
+      "Habit updated successfully.",
+      () => getHabitById()
+    );
+  }
+
+  function deleteHabit() {
+    const id = requireValue("habitId", "Habit ID");
+    if (!id) return;
+
+    sendJson(
+      `${API}/habits/${id}`,
+      "DELETE",
+      null,
+      `Habit ${id} deleted successfully.`
     );
   }
 
@@ -475,7 +752,7 @@
   }
 
   function getDailyLogById() {
-    const id = requireId("dailyLogId", "Daily Log ID");
+    const id = requireValue("dailyLogId", "Daily Log ID");
     if (!id) return;
 
     fetchData(
@@ -487,7 +764,7 @@
   }
 
   function getDailyLogsByUser() {
-    const userId = requireId("dailyLogId", "User ID");
+    const userId = requireValue("dailyLogUserId", "User ID");
     if (!userId) return;
 
     fetchData(
@@ -495,6 +772,64 @@
       `daily logs for user ${userId}`,
       renderDailyLogs,
       "This table shows all daily logs associated with the selected user."
+    );
+  }
+
+  function createDailyLog() {
+    const userId = requireValue("dailyLogUserId", "User ID");
+    const logDate = requireValue("dailyLogDate", "Log Date");
+    if (!userId || !logDate) return;
+
+    const sleepHours = parseNullableNumber(document.getElementById("dailyLogSleepHours").value);
+    const moodRating = parseNullableNumber(document.getElementById("dailyLogMood").value);
+    const stressLevel = parseNullableNumber(document.getElementById("dailyLogStress").value);
+    const energyLevel = parseNullableNumber(document.getElementById("dailyLogEnergy").value);
+    const notes = document.getElementById("dailyLogNotes").value.trim() || null;
+
+    sendJson(
+      `${API}/dailyLogs`,
+      "POST",
+      {
+        userId: Number(userId),
+        logDate,
+        sleepHours,
+        moodRating,
+        stressLevel,
+        energyLevel,
+        notes
+      },
+      "Daily log created successfully."
+    );
+  }
+
+  function updateDailyLog() {
+    const id = requireValue("dailyLogId", "Daily Log ID");
+    if (!id) return;
+
+    const sleepHours = parseNullableNumber(document.getElementById("dailyLogSleepHours").value);
+    const mood = parseNullableNumber(document.getElementById("dailyLogMood").value);
+    const stress = parseNullableNumber(document.getElementById("dailyLogStress").value);
+    const energy = parseNullableNumber(document.getElementById("dailyLogEnergy").value);
+    const notes = document.getElementById("dailyLogNotes").value.trim() || null;
+
+    sendJson(
+      `${API}/dailyLogs/${id}/ratings`,
+      "PUT",
+      { sleepHours, mood, stress, energy, notes },
+      "Daily log updated successfully.",
+      () => getDailyLogById()
+    );
+  }
+
+  function deleteDailyLog() {
+    const id = requireValue("dailyLogId", "Daily Log ID");
+    if (!id) return;
+
+    sendJson(
+      `${API}/dailyLogs/${id}`,
+      "DELETE",
+      null,
+      `Daily log ${id} deleted successfully.`
     );
   }
 
@@ -508,7 +843,7 @@
   }
 
   function getHabitEntryById() {
-    const id = requireId("entryId", "Habit Entry ID");
+    const id = requireValue("entryId", "Habit Entry ID");
     if (!id) return;
 
     fetchData(
@@ -520,7 +855,7 @@
   }
 
   function getEntriesByDailyLog() {
-    const dailyLogId = requireId("entryId", "Daily Log ID");
+    const dailyLogId = requireValue("entryDailyLogId", "Daily Log ID");
     if (!dailyLogId) return;
 
     fetchData(
@@ -528,6 +863,58 @@
       `habit entries for daily log ${dailyLogId}`,
       renderHabitEntries,
       "This table shows all habit entries recorded for the selected daily log."
+    );
+  }
+
+  function createHabitEntry() {
+    const dailyLogId = requireValue("entryDailyLogId", "Daily Log ID");
+    const habitId = requireValue("entryHabitId", "Habit ID");
+    if (!dailyLogId || !habitId) return;
+
+    const completed = parseBoolean(document.getElementById("entryCompleted").value, false);
+    const actualValue = parseNullableNumber(document.getElementById("entryActualValue").value);
+    const entryNote = document.getElementById("entryNote").value.trim() || null;
+
+    sendJson(
+      `${API}/habitEntries`,
+      "POST",
+      {
+        dailyLogId: Number(dailyLogId),
+        habitId: Number(habitId),
+        completed,
+        actualValue,
+        entryNote
+      },
+      "Habit entry created successfully."
+    );
+  }
+
+  function updateHabitEntry() {
+    const id = requireValue("entryId", "Habit Entry ID");
+    if (!id) return;
+
+    const completed = parseBoolean(document.getElementById("entryCompleted").value, false);
+    const actualValue = parseNullableNumber(document.getElementById("entryActualValue").value);
+    const note = document.getElementById("entryNote").value.trim() || null;
+
+    sendJson(
+      `${API}/habitEntries/${id}`,
+      "PUT",
+      { completed, actualValue, note },
+      "Habit entry updated successfully.",
+      () => getHabitEntryById()
+    );
+  }
+
+  function deleteHabitEntry() {
+    const id = requireValue("entryId", "Habit Entry ID");
+    if (!id) return;
+
+    sendJson(
+      `${API}/habitEntries/${id}`,
+      "DELETE",
+      null,
+      `Habit entry ${id} deleted successfully.`
     );
   }
 </script>
