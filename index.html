@@ -31,14 +31,14 @@
     }
 
     .page {
-      max-width: 1300px;
+      max-width: 1200px;
       margin: 0 auto;
       padding: 24px;
     }
 
     h1 {
       margin: 0 0 8px 0;
-      font-size: 44px;
+      font-size: 42px;
     }
 
     .subtitle {
@@ -53,11 +53,10 @@
       align-items: flex-start;
       gap: 16px;
       flex-wrap: wrap;
-      margin-bottom: 20px;
+      margin-bottom: 18px;
     }
 
-    .info-box,
-    .card {
+    .card, .info-box {
       background: var(--card);
       border: 1px solid var(--border);
       border-radius: var(--radius);
@@ -66,6 +65,7 @@
 
     .info-box {
       padding: 14px 16px;
+      margin-bottom: 18px;
     }
 
     .info-box strong {
@@ -80,18 +80,18 @@
 
     .card h2 {
       margin: 0 0 8px 0;
-      font-size: 34px;
+      font-size: 32px;
     }
 
     .card h3 {
       margin: 0 0 10px 0;
-      font-size: 24px;
+      font-size: 22px;
     }
 
     .section-note {
       color: var(--muted);
       font-size: 15px;
-      margin-bottom: 14px;
+      margin-bottom: 12px;
     }
 
     .form-grid {
@@ -155,6 +155,10 @@
       background: var(--gray-dark);
     }
 
+    .hidden {
+      display: none;
+    }
+
     .list {
       display: flex;
       flex-direction: column;
@@ -204,10 +208,6 @@
       margin-top: 6px;
     }
 
-    .hidden {
-      display: none;
-    }
-
     .empty {
       color: var(--muted);
       font-style: italic;
@@ -234,6 +234,56 @@
       background: #fef2f2;
       color: #991b1b;
       border: 1px solid #fecaca;
+    }
+
+    .subtle-box {
+      border: 1px dashed #cbd5e1;
+      border-radius: 12px;
+      padding: 16px;
+      color: var(--muted);
+      background: #fafcff;
+      margin-top: 12px;
+    }
+
+    .checklist {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      margin-top: 12px;
+    }
+
+    .check-item {
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 14px;
+      background: white;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+
+    .check-left {
+      min-width: 220px;
+    }
+
+    .check-title {
+      font-weight: 700;
+      margin-bottom: 4px;
+      font-size: 17px;
+    }
+
+    .check-sub {
+      color: var(--muted);
+      font-size: 14px;
+    }
+
+    .check-right {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-weight: 700;
     }
 
     .table-wrap {
@@ -264,13 +314,9 @@
       letter-spacing: .02em;
     }
 
-    .subtle-box {
-      border: 1px dashed #cbd5e1;
-      border-radius: 12px;
-      padding: 16px;
+    .muted {
       color: var(--muted);
-      background: #fafcff;
-      margin-top: 12px;
+      font-size: 13px;
     }
 
     @media (max-width: 850px) {
@@ -285,6 +331,10 @@
       .card h2 {
         font-size: 28px;
       }
+
+      .check-item {
+        align-items: flex-start;
+      }
     }
   </style>
 </head>
@@ -293,9 +343,7 @@
     <div class="topbar">
       <div>
         <h1>Wellness Tracker Client</h1>
-        <div class="subtitle">
-          User → Daily Logs → Habit Entries
-        </div>
+        <div class="subtitle">Simple flow: User → Habits → Daily Logs → Completed/Incomplete</div>
       </div>
 
       <div class="info-box">
@@ -304,151 +352,91 @@
       </div>
     </div>
 
-    <div class="info-box" style="margin-bottom: 18px;">
-      <strong>How this works</strong>
+    <div class="info-box">
+      <strong>How this version works</strong>
       <div>
-        Start by creating or selecting a user. Then the page will show that user’s daily logs. Select a daily log to see its habit entries.
+        IDs are auto-created by the database. You never type IDs manually. Select a user, create habits for that user, create a daily log, then mark each habit completed or incomplete for that day.
       </div>
     </div>
 
-    <!-- USERS -->
     <div class="card">
       <h2>Users</h2>
-      <div class="section-note">Only users are shown first to keep the page simple.</div>
+      <div class="section-note">Create a user with only email and full name. Click a user to continue.</div>
 
-      <h3>Create / Update User</h3>
+      <h3>Create / Update Selected User</h3>
       <div class="form-grid">
-        <input id="userId" placeholder="User ID (for update/delete)" />
         <input id="userEmail" placeholder="Email" />
         <input id="userFullName" placeholder="Full Name" />
       </div>
 
       <div class="btn-row">
         <button onclick="createUser()">Create User</button>
-        <button onclick="updateUser()">Update User</button>
-        <button class="danger" onclick="deleteUser()">Delete User</button>
+        <button onclick="updateSelectedUser()">Update Selected User</button>
+        <button class="danger" onclick="deleteSelectedUser()">Delete Selected User</button>
         <button class="secondary" onclick="loadUsers()">Refresh Users</button>
       </div>
 
-      <h3>All Users</h3>
       <div id="usersList" class="list"></div>
     </div>
 
-    <!-- USER DETAILS / DAILY LOGS -->
     <div id="userFlowSection" class="hidden">
       <div class="card">
         <h2>Selected User</h2>
         <div id="selectedUserSummary" class="section-note">No user selected.</div>
 
-        <div class="btn-row">
-          <button class="secondary" onclick="toggleHabits()">Show / Hide Habits</button>
-        </div>
-
-        <div id="habitsSection" class="hidden">
-          <h3>Habits for Selected User</h3>
-          <div class="section-note">
-            Habits are optional to view here so the page stays less crowded.
-          </div>
-
-          <div class="form-grid">
-            <input id="habitId" placeholder="Habit ID (for update/delete)" />
-            <input id="habitName" placeholder="Habit Name" />
-            <input id="habitUnit" placeholder="Unit (cups, min, count, etc.)" />
-            <input id="habitTargetValue" placeholder="Target Value" />
-            <input id="habitIsActive" placeholder="true or false" />
-          </div>
-
-          <div class="btn-row">
-            <button onclick="createHabit()">Create Habit</button>
-            <button onclick="updateHabit()">Update Habit</button>
-            <button class="danger" onclick="deleteHabit()">Delete Habit</button>
-          </div>
-
-          <div class="table-wrap">
-            <table id="habitsTable">
-              <thead>
-                <tr>
-                  <th>Habit ID</th>
-                  <th>Name</th>
-                  <th>Unit</th>
-                  <th>Target</th>
-                  <th>Active</th>
-                </tr>
-              </thead>
-              <tbody></tbody>
-            </table>
-          </div>
-        </div>
-
-        <h3 style="margin-top: 22px;">Daily Logs for Selected User</h3>
-        <div class="section-note">Choose a daily log to load that day’s habit entries.</div>
+        <h3>Habits for Selected User</h3>
+        <div class="section-note">Only habit name and unit are needed. IDs are assigned automatically.</div>
 
         <div class="form-grid">
-          <input id="dailyLogId" placeholder="Daily Log ID (for update/delete)" />
+          <input id="habitName" placeholder="Habit Name" />
+          <input id="habitUnit" placeholder="Unit (cups, minutes, glasses, etc.)" />
+        </div>
+
+        <div class="btn-row">
+          <button onclick="createHabit()">Create Habit</button>
+          <button onclick="updateSelectedHabit()">Update Selected Habit</button>
+          <button class="danger" onclick="deleteSelectedHabit()">Delete Selected Habit</button>
+        </div>
+
+        <div id="habitsList" class="list"></div>
+      </div>
+
+      <div class="card">
+        <h2>Daily Logs for Selected User</h2>
+        <div class="section-note">Create a daily log, then select it to mark habits completed or incomplete.</div>
+
+        <div class="form-grid">
           <input id="dailyLogDate" placeholder="YYYY-MM-DD" />
-          <input id="sleepHours" placeholder="Sleep Hours" />
-          <input id="moodRating" placeholder="Mood Rating" />
-          <input id="stressLevel" placeholder="Stress Level" />
-          <input id="energyLevel" placeholder="Energy Level" />
         </div>
 
         <div class="form-grid single">
-          <textarea id="dailyLogNotes" placeholder="Notes"></textarea>
+          <textarea id="dailyLogNotes" placeholder="Notes for the day"></textarea>
         </div>
 
         <div class="btn-row">
           <button onclick="createDailyLog()">Create Daily Log</button>
-          <button onclick="updateDailyLog()">Update Daily Log</button>
-          <button class="danger" onclick="deleteDailyLog()">Delete Daily Log</button>
+          <button onclick="updateSelectedDailyLog()">Update Selected Daily Log</button>
+          <button class="danger" onclick="deleteSelectedDailyLog()">Delete Selected Daily Log</button>
         </div>
 
         <div id="dailyLogsList" class="list"></div>
       </div>
     </div>
 
-    <!-- HABIT ENTRIES -->
     <div id="entriesFlowSection" class="hidden">
       <div class="card">
-        <h2>Selected Daily Log</h2>
+        <h2>Habit Checklist for Selected Daily Log</h2>
         <div id="selectedLogSummary" class="section-note">No daily log selected.</div>
 
-        <h3>Habit Entries for Selected Daily Log</h3>
-
-        <div class="form-grid">
-          <input id="habitEntryId" placeholder="Habit Entry ID (for update/delete)" />
-          <input id="entryHabitId" placeholder="Habit ID" />
-          <input id="entryCompleted" placeholder="true or false" />
-          <input id="entryActualValue" placeholder="Actual Value" />
-        </div>
-
-        <div class="form-grid single">
-          <textarea id="entryNote" placeholder="Entry Note"></textarea>
-        </div>
-
         <div class="btn-row">
-          <button onclick="createHabitEntry()">Create Habit Entry</button>
-          <button onclick="updateHabitEntry()">Update Habit Entry</button>
-          <button class="danger" onclick="deleteHabitEntry()">Delete Habit Entry</button>
+          <button onclick="saveChecklist()">Save Completed / Incomplete</button>
+          <button class="secondary" onclick="loadChecklist()">Refresh Checklist</button>
         </div>
 
-        <div class="table-wrap">
-          <table id="entriesTable">
-            <thead>
-              <tr>
-                <th>Entry ID</th>
-                <th>Habit ID</th>
-                <th>Completed</th>
-                <th>Actual Value</th>
-                <th>Entry Note</th>
-              </tr>
-            </thead>
-            <tbody></tbody>
-          </table>
-        </div>
+        <div id="checklistContainer" class="checklist"></div>
       </div>
     </div>
 
-    <!-- PLACEHOLDER MESSAGE -->
     <div id="nextStepMessage" class="subtle-box">
       Select a user to continue.
     </div>
@@ -480,7 +468,13 @@
     document.getElementById("apiBaseText").textContent = BASE;
 
     let selectedUser = null;
+    let selectedHabit = null;
     let selectedDailyLog = null;
+
+    let currentHabits = [];
+    let currentDailyLogs = [];
+    let currentEntries = [];
+    let checklistState = [];
 
     function setStatus(message, isError = false) {
       const el = document.getElementById("statusMessage");
@@ -501,15 +495,6 @@
         return null;
       }
       return value;
-    }
-
-    function parseBoolean(value) {
-      return String(value).trim().toLowerCase() === "true";
-    }
-
-    function numberOrNull(id) {
-      const value = document.getElementById(id).value.trim();
-      return value === "" ? null : Number(value);
     }
 
     function escapeHtml(str) {
@@ -574,7 +559,6 @@
 
     function hideUserFlow() {
       document.getElementById("userFlowSection").classList.add("hidden");
-      document.getElementById("habitsSection").classList.add("hidden");
     }
 
     function showEntriesFlow() {
@@ -583,14 +567,6 @@
 
     function hideEntriesFlow() {
       document.getElementById("entriesFlowSection").classList.add("hidden");
-    }
-
-    function toggleHabits() {
-      if (!selectedUser) {
-        setStatus("Select a user first.", true);
-        return;
-      }
-      document.getElementById("habitsSection").classList.toggle("hidden");
     }
 
     async function loadUsers() {
@@ -637,82 +613,263 @@
       selectedUser = {
         userId: user.userId || user.user_id,
         fullName: user.fullName || user.full_name,
-        email: user.email
+        email: user.email || ""
       };
 
+      selectedHabit = null;
       selectedDailyLog = null;
+
+      document.getElementById("userEmail").value = selectedUser.email;
+      document.getElementById("userFullName").value = selectedUser.fullName;
 
       document.getElementById("selectedUserSummary").innerHTML = `
         <strong>${selectedUser.fullName}</strong><br>
-        Email: ${selectedUser.email || ""}<br>
+        Email: ${selectedUser.email}<br>
         <span class="pill">Selected User ID: ${selectedUser.userId}</span>
       `;
 
-      document.getElementById("userId").value = selectedUser.userId;
-      document.getElementById("userEmail").value = selectedUser.email || "";
-      document.getElementById("userFullName").value = selectedUser.fullName || "";
-
-      document.getElementById("selectedLogSummary").textContent = "No daily log selected.";
-      renderEntries([]);
       showUserFlow();
       hideEntriesFlow();
 
-      document.getElementById("nextStepMessage").textContent = "Select a daily log to see its habit entries.";
+      document.getElementById("nextStepMessage").classList.remove("hidden");
+      document.getElementById("nextStepMessage").textContent = "Select a daily log to mark habits completed or incomplete.";
 
       await loadUsers();
       await loadHabitsForUser(selectedUser.userId);
       await loadDailyLogsForUser(selectedUser.userId);
     }
 
+    async function createUser() {
+      try {
+        const email = requireValue("userEmail", "Email");
+        const fullName = requireValue("userFullName", "Full Name");
+        if (!email || !fullName) return;
+
+        const created = await apiRequest(`${API}/users`, "POST", {
+          email,
+          fullName
+        });
+
+        setStatus("User created successfully.");
+        await loadUsers();
+
+        if (created && (created.userId || created.user_id)) {
+          await selectUser(created);
+        }
+      } catch (err) {
+        setStatus(`Create user failed: ${err.message}`, true);
+      }
+    }
+
+    async function updateSelectedUser() {
+      try {
+        if (!selectedUser) {
+          setStatus("Select a user first.", true);
+          return;
+        }
+
+        const email = requireValue("userEmail", "Email");
+        const fullName = requireValue("userFullName", "Full Name");
+        if (!email || !fullName) return;
+
+        await apiRequest(`${API}/users/${selectedUser.userId}`, "PUT", {
+          email,
+          fullName
+        });
+
+        selectedUser.email = email;
+        selectedUser.fullName = fullName;
+
+        document.getElementById("selectedUserSummary").innerHTML = `
+          <strong>${selectedUser.fullName}</strong><br>
+          Email: ${selectedUser.email}<br>
+          <span class="pill">Selected User ID: ${selectedUser.userId}</span>
+        `;
+
+        setStatus("Selected user updated successfully.");
+        await loadUsers();
+      } catch (err) {
+        setStatus(`Update user failed: ${err.message}`, true);
+      }
+    }
+
+    async function deleteSelectedUser() {
+      try {
+        if (!selectedUser) {
+          setStatus("Select a user first.", true);
+          return;
+        }
+
+        await apiRequest(`${API}/users/${selectedUser.userId}`, "DELETE");
+
+        selectedUser = null;
+        selectedHabit = null;
+        selectedDailyLog = null;
+        currentHabits = [];
+        currentDailyLogs = [];
+        currentEntries = [];
+        checklistState = [];
+
+        document.getElementById("userEmail").value = "";
+        document.getElementById("userFullName").value = "";
+        document.getElementById("habitName").value = "";
+        document.getElementById("habitUnit").value = "";
+        document.getElementById("dailyLogDate").value = "";
+        document.getElementById("dailyLogNotes").value = "";
+
+        hideUserFlow();
+        hideEntriesFlow();
+
+        document.getElementById("nextStepMessage").classList.remove("hidden");
+        document.getElementById("nextStepMessage").textContent = "Select a user to continue.";
+
+        await loadUsers();
+        setStatus("Selected user deleted successfully.");
+      } catch (err) {
+        setStatus(`Delete user failed: ${err.message}`, true);
+      }
+    }
+
     async function loadHabitsForUser(userId) {
       try {
-        const habits = await apiRequest(`${API}/habits/user/${userId}`);
-        renderHabits(habits);
+        currentHabits = await apiRequest(`${API}/habits/user/${userId}`);
+        renderHabits(currentHabits);
       } catch (err) {
+        currentHabits = [];
         renderHabits([]);
-        setStatus(`Could not load habits for user ${userId}: ${err.message}`, true);
+        setStatus(`Could not load habits: ${err.message}`, true);
       }
     }
 
     function renderHabits(habits) {
-      const tbody = document.querySelector("#habitsTable tbody");
-      tbody.innerHTML = "";
+      const container = document.getElementById("habitsList");
+      container.innerHTML = "";
 
       if (!habits || habits.length === 0) {
-        tbody.innerHTML = `<tr><td colspan="5">No habits found for selected user.</td></tr>`;
+        container.innerHTML = `<div class="empty">No habits found for selected user.</div>`;
         return;
       }
 
       habits.forEach(habit => {
         const habitId = habit.habitId || habit.habit_id;
-        const tr = document.createElement("tr");
-        tr.innerHTML = `
-          <td>${habitId}</td>
-          <td>${habit.name || ""}</td>
-          <td>${habit.unit || ""}</td>
-          <td>${habit.targetValue || habit.target_value || ""}</td>
-          <td>${String(habit.isActive ?? habit.is_active)}</td>
+        const div = document.createElement("div");
+        div.className = "list-item" + (selectedHabit && selectedHabit.habitId == habitId ? " active" : "");
+        div.onclick = () => selectHabit(habit);
+
+        div.innerHTML = `
+          <div class="item-title">${habit.name || ""}</div>
+          <div class="item-sub">
+            Habit ID: ${habitId}<br>
+            Unit: ${habit.unit || ""}
+          </div>
         `;
 
-        tr.onclick = () => {
-          document.getElementById("habitId").value = habitId;
-          document.getElementById("habitName").value = habit.name || "";
-          document.getElementById("habitUnit").value = habit.unit || "";
-          document.getElementById("habitTargetValue").value = habit.targetValue || habit.target_value || "";
-          document.getElementById("habitIsActive").value = String(habit.isActive ?? habit.is_active);
-        };
-
-        tbody.appendChild(tr);
+        container.appendChild(div);
       });
+    }
+
+    function selectHabit(habit) {
+      selectedHabit = {
+        habitId: habit.habitId || habit.habit_id,
+        name: habit.name || "",
+        unit: habit.unit || ""
+      };
+
+      document.getElementById("habitName").value = selectedHabit.name;
+      document.getElementById("habitUnit").value = selectedHabit.unit;
+      renderHabits(currentHabits);
+    }
+
+    async function createHabit() {
+      try {
+        if (!selectedUser) {
+          setStatus("Select a user first.", true);
+          return;
+        }
+
+        const name = requireValue("habitName", "Habit Name");
+        const unit = requireValue("habitUnit", "Unit");
+        if (!name || !unit) return;
+
+        const created = await apiRequest(`${API}/habits`, "POST", {
+          userId: selectedUser.userId,
+          name,
+          unit
+        });
+
+        setStatus("Habit created successfully.");
+        document.getElementById("habitName").value = "";
+        document.getElementById("habitUnit").value = "";
+        selectedHabit = null;
+
+        await loadHabitsForUser(selectedUser.userId);
+
+        if (created && (created.habitId || created.habit_id)) {
+          selectHabit(created);
+        }
+      } catch (err) {
+        setStatus(`Create habit failed: ${err.message}`, true);
+      }
+    }
+
+    async function updateSelectedHabit() {
+      try {
+        if (!selectedUser || !selectedHabit) {
+          setStatus("Select a habit first.", true);
+          return;
+        }
+
+        const name = requireValue("habitName", "Habit Name");
+        const unit = requireValue("habitUnit", "Unit");
+        if (!name || !unit) return;
+
+        await apiRequest(`${API}/habits/${selectedHabit.habitId}`, "PUT", {
+          userId: selectedUser.userId,
+          name,
+          unit
+        });
+
+        selectedHabit.name = name;
+        selectedHabit.unit = unit;
+
+        setStatus("Selected habit updated successfully.");
+        await loadHabitsForUser(selectedUser.userId);
+      } catch (err) {
+        setStatus(`Update habit failed: ${err.message}`, true);
+      }
+    }
+
+    async function deleteSelectedHabit() {
+      try {
+        if (!selectedHabit) {
+          setStatus("Select a habit first.", true);
+          return;
+        }
+
+        await apiRequest(`${API}/habits/${selectedHabit.habitId}`, "DELETE");
+        selectedHabit = null;
+        document.getElementById("habitName").value = "";
+        document.getElementById("habitUnit").value = "";
+
+        setStatus("Selected habit deleted successfully.");
+        await loadHabitsForUser(selectedUser.userId);
+
+        if (selectedDailyLog) {
+          await loadChecklist();
+        }
+      } catch (err) {
+        setStatus(`Delete habit failed: ${err.message}`, true);
+      }
     }
 
     async function loadDailyLogsForUser(userId) {
       try {
-        const logs = await apiRequest(`${API}/daily-logs/user/${userId}`);
-        renderDailyLogs(logs);
+        currentDailyLogs = await apiRequest(`${API}/daily-logs/user/${userId}`);
+        renderDailyLogs(currentDailyLogs);
       } catch (err) {
+        currentDailyLogs = [];
         renderDailyLogs([]);
-        setStatus(`Could not load daily logs for user ${userId}: ${err.message}`, true);
+        setStatus(`Could not load daily logs: ${err.message}`, true);
       }
     }
 
@@ -737,10 +894,7 @@
           <div class="item-title">${logDate}</div>
           <div class="item-sub">
             Daily Log ID: ${logId}<br>
-            Sleep: ${log.sleepHours || log.sleep_hours || ""} |
-            Mood: ${log.moodRating || log.mood_rating || ""} |
-            Stress: ${log.stressLevel || log.stress_level || ""} |
-            Energy: ${log.energyLevel || log.energy_level || ""}
+            Notes: ${(log.notes || "").trim() ? escapeHtml(log.notes) : "No notes"}
           </div>
         `;
 
@@ -751,226 +905,23 @@
     async function selectDailyLog(log) {
       selectedDailyLog = {
         dailyLogId: log.dailyLogId || log.daily_log_id,
-        logDate: log.logDate || log.log_date
+        logDate: log.logDate || log.log_date || "",
+        notes: log.notes || ""
       };
 
+      document.getElementById("dailyLogDate").value = selectedDailyLog.logDate;
+      document.getElementById("dailyLogNotes").value = selectedDailyLog.notes;
+
       document.getElementById("selectedLogSummary").innerHTML = `
-        <strong>${selectedDailyLog.logDate || "Selected Daily Log"}</strong><br>
+        <strong>${selectedDailyLog.logDate}</strong><br>
         <span class="pill">Selected Daily Log ID: ${selectedDailyLog.dailyLogId}</span>
       `;
 
-      document.getElementById("dailyLogId").value = selectedDailyLog.dailyLogId;
-      document.getElementById("dailyLogDate").value = log.logDate || log.log_date || "";
-      document.getElementById("sleepHours").value = log.sleepHours || log.sleep_hours || "";
-      document.getElementById("moodRating").value = log.moodRating || log.mood_rating || "";
-      document.getElementById("stressLevel").value = log.stressLevel || log.stress_level || "";
-      document.getElementById("energyLevel").value = log.energyLevel || log.energy_level || "";
-      document.getElementById("dailyLogNotes").value = log.notes || "";
-
+      renderDailyLogs(currentDailyLogs);
       showEntriesFlow();
       document.getElementById("nextStepMessage").classList.add("hidden");
 
-      await loadDailyLogsForUser(selectedUser.userId);
-      await loadEntriesForDailyLog(selectedDailyLog.dailyLogId);
-    }
-
-    async function loadEntriesForDailyLog(dailyLogId) {
-      try {
-        const entries = await apiRequest(`${API}/habit-entries/daily-log/${dailyLogId}`);
-        renderEntries(entries);
-      } catch (err) {
-        renderEntries([]);
-        setStatus(`Could not load habit entries for daily log ${dailyLogId}: ${err.message}`, true);
-      }
-    }
-
-    function renderEntries(entries) {
-      const tbody = document.querySelector("#entriesTable tbody");
-      tbody.innerHTML = "";
-
-      if (!entries || entries.length === 0) {
-        tbody.innerHTML = `<tr><td colspan="5">No habit entries found for selected daily log.</td></tr>`;
-        return;
-      }
-
-      entries.forEach(entry => {
-        const entryId = entry.habitEntryId || entry.habit_entry_id;
-
-        const tr = document.createElement("tr");
-        tr.innerHTML = `
-          <td>${entryId}</td>
-          <td>${entry.habitId || entry.habit_id}</td>
-          <td>${String(entry.completed)}</td>
-          <td>${entry.actualValue || entry.actual_value || ""}</td>
-          <td>${entry.entryNote || entry.entry_note || ""}</td>
-        `;
-
-        tr.onclick = () => {
-          document.getElementById("habitEntryId").value = entryId;
-          document.getElementById("entryHabitId").value = entry.habitId || entry.habit_id;
-          document.getElementById("entryCompleted").value = String(entry.completed);
-          document.getElementById("entryActualValue").value = entry.actualValue || entry.actual_value || "";
-          document.getElementById("entryNote").value = entry.entryNote || entry.entry_note || "";
-        };
-
-        tbody.appendChild(tr);
-      });
-    }
-
-    async function createUser() {
-      try {
-        const email = requireValue("userEmail", "Email");
-        const fullName = requireValue("userFullName", "Full Name");
-        if (!email || !fullName) return;
-
-        await apiRequest(`${API}/users`, "POST", { email, fullName });
-        setStatus("User created successfully.");
-
-        const users = await apiRequest(`${API}/users`);
-        renderUsers(users);
-
-        const newest = users[users.length - 1];
-        if (newest) {
-          await selectUser(newest);
-        }
-      } catch (err) {
-        setStatus(`Create user failed: ${err.message}`, true);
-      }
-    }
-
-    async function updateUser() {
-      try {
-        const id = requireValue("userId", "User ID");
-        const email = requireValue("userEmail", "Email");
-        const fullName = requireValue("userFullName", "Full Name");
-        if (!id || !email || !fullName) return;
-
-        await apiRequest(`${API}/users/${id}`, "PUT", { email, fullName });
-        setStatus("User updated successfully.");
-
-        if (selectedUser && selectedUser.userId == id) {
-          selectedUser.fullName = fullName;
-          selectedUser.email = email;
-
-          document.getElementById("selectedUserSummary").innerHTML = `
-            <strong>${fullName}</strong><br>
-            Email: ${email}<br>
-            <span class="pill">Selected User ID: ${id}</span>
-          `;
-        }
-
-        await loadUsers();
-      } catch (err) {
-        setStatus(`Update user failed: ${err.message}`, true);
-      }
-    }
-
-    async function deleteUser() {
-      try {
-        const id = requireValue("userId", "User ID");
-        if (!id) return;
-
-        await apiRequest(`${API}/users/${id}`, "DELETE");
-        setStatus("User deleted successfully.");
-
-        selectedUser = null;
-        selectedDailyLog = null;
-
-        document.getElementById("userId").value = "";
-        document.getElementById("userEmail").value = "";
-        document.getElementById("userFullName").value = "";
-
-        document.getElementById("selectedUserSummary").textContent = "No user selected.";
-        document.getElementById("selectedLogSummary").textContent = "No daily log selected.";
-        document.getElementById("dailyLogsList").innerHTML = "";
-        renderHabits([]);
-        renderEntries([]);
-        hideUserFlow();
-        hideEntriesFlow();
-
-        const nextStep = document.getElementById("nextStepMessage");
-        nextStep.classList.remove("hidden");
-        nextStep.textContent = "Select a user to continue.";
-
-        await loadUsers();
-      } catch (err) {
-        setStatus(`Delete user failed: ${err.message}`, true);
-      }
-    }
-
-    async function createHabit() {
-      try {
-        if (!selectedUser) {
-          setStatus("Select a user first.", true);
-          return;
-        }
-
-        const name = requireValue("habitName", "Habit Name");
-        const unit = requireValue("habitUnit", "Unit");
-        if (!name || !unit) return;
-
-        const targetValue = document.getElementById("habitTargetValue").value.trim();
-        const isActiveRaw = document.getElementById("habitIsActive").value.trim();
-
-        await apiRequest(`${API}/habits`, "POST", {
-          userId: selectedUser.userId,
-          name,
-          unit,
-          targetValue: targetValue === "" ? null : Number(targetValue),
-          isActive: isActiveRaw === "" ? true : parseBoolean(isActiveRaw)
-        });
-
-        setStatus("Habit created successfully.");
-        await loadHabitsForUser(selectedUser.userId);
-      } catch (err) {
-        setStatus(`Create habit failed: ${err.message}`, true);
-      }
-    }
-
-    async function updateHabit() {
-      try {
-        if (!selectedUser) {
-          setStatus("Select a user first.", true);
-          return;
-        }
-
-        const habitId = requireValue("habitId", "Habit ID");
-        const name = requireValue("habitName", "Habit Name");
-        const unit = requireValue("habitUnit", "Unit");
-        if (!habitId || !name || !unit) return;
-
-        const targetValue = document.getElementById("habitTargetValue").value.trim();
-        const isActiveRaw = document.getElementById("habitIsActive").value.trim();
-
-        await apiRequest(`${API}/habits/${habitId}`, "PUT", {
-          userId: selectedUser.userId,
-          name,
-          unit,
-          targetValue: targetValue === "" ? null : Number(targetValue),
-          isActive: isActiveRaw === "" ? true : parseBoolean(isActiveRaw)
-        });
-
-        setStatus("Habit updated successfully.");
-        await loadHabitsForUser(selectedUser.userId);
-      } catch (err) {
-        setStatus(`Update habit failed: ${err.message}`, true);
-      }
-    }
-
-    async function deleteHabit() {
-      try {
-        const habitId = requireValue("habitId", "Habit ID");
-        if (!habitId) return;
-
-        await apiRequest(`${API}/habits/${habitId}`, "DELETE");
-        setStatus("Habit deleted successfully.");
-
-        if (selectedUser) {
-          await loadHabitsForUser(selectedUser.userId);
-        }
-      } catch (err) {
-        setStatus(`Delete habit failed: ${err.message}`, true);
-      }
+      await loadChecklist();
     }
 
     async function createDailyLog() {
@@ -983,148 +934,186 @@
         const logDate = requireValue("dailyLogDate", "Log Date");
         if (!logDate) return;
 
-        await apiRequest(`${API}/daily-logs`, "POST", {
+        const notes = document.getElementById("dailyLogNotes").value.trim();
+
+        const created = await apiRequest(`${API}/daily-logs`, "POST", {
           userId: selectedUser.userId,
           logDate,
-          sleepHours: numberOrNull("sleepHours"),
-          moodRating: numberOrNull("moodRating"),
-          stressLevel: numberOrNull("stressLevel"),
-          energyLevel: numberOrNull("energyLevel"),
-          notes: document.getElementById("dailyLogNotes").value.trim()
+          notes
         });
 
         setStatus("Daily log created successfully.");
         await loadDailyLogsForUser(selectedUser.userId);
+
+        if (created && (created.dailyLogId || created.daily_log_id)) {
+          await selectDailyLog(created);
+        }
       } catch (err) {
         setStatus(`Create daily log failed: ${err.message}`, true);
       }
     }
 
-    async function updateDailyLog() {
+    async function updateSelectedDailyLog() {
       try {
-        if (!selectedUser) {
-          setStatus("Select a user first.", true);
+        if (!selectedDailyLog || !selectedUser) {
+          setStatus("Select a daily log first.", true);
           return;
         }
 
-        const dailyLogId = requireValue("dailyLogId", "Daily Log ID");
         const logDate = requireValue("dailyLogDate", "Log Date");
-        if (!dailyLogId || !logDate) return;
+        if (!logDate) return;
 
-        await apiRequest(`${API}/daily-logs/${dailyLogId}`, "PUT", {
+        const notes = document.getElementById("dailyLogNotes").value.trim();
+
+        await apiRequest(`${API}/daily-logs/${selectedDailyLog.dailyLogId}`, "PUT", {
           userId: selectedUser.userId,
           logDate,
-          sleepHours: numberOrNull("sleepHours"),
-          moodRating: numberOrNull("moodRating"),
-          stressLevel: numberOrNull("stressLevel"),
-          energyLevel: numberOrNull("energyLevel"),
-          notes: document.getElementById("dailyLogNotes").value.trim()
+          notes
         });
 
-        setStatus("Daily log updated successfully.");
-        await loadDailyLogsForUser(selectedUser.userId);
+        selectedDailyLog.logDate = logDate;
+        selectedDailyLog.notes = notes;
 
-        if (selectedDailyLog && selectedDailyLog.dailyLogId == dailyLogId) {
-          await loadEntriesForDailyLog(dailyLogId);
-        }
+        document.getElementById("selectedLogSummary").innerHTML = `
+          <strong>${selectedDailyLog.logDate}</strong><br>
+          <span class="pill">Selected Daily Log ID: ${selectedDailyLog.dailyLogId}</span>
+        `;
+
+        setStatus("Selected daily log updated successfully.");
+        await loadDailyLogsForUser(selectedUser.userId);
       } catch (err) {
         setStatus(`Update daily log failed: ${err.message}`, true);
       }
     }
 
-    async function deleteDailyLog() {
+    async function deleteSelectedDailyLog() {
       try {
-        const dailyLogId = requireValue("dailyLogId", "Daily Log ID");
-        if (!dailyLogId) return;
+        if (!selectedDailyLog) {
+          setStatus("Select a daily log first.", true);
+          return;
+        }
 
-        await apiRequest(`${API}/daily-logs/${dailyLogId}`, "DELETE");
-        setStatus("Daily log deleted successfully.");
+        await apiRequest(`${API}/daily-logs/${selectedDailyLog.dailyLogId}`, "DELETE");
 
         selectedDailyLog = null;
-        document.getElementById("selectedLogSummary").textContent = "No daily log selected.";
-        renderEntries([]);
+        currentEntries = [];
+        checklistState = [];
+        document.getElementById("checklistContainer").innerHTML = "";
+        document.getElementById("dailyLogDate").value = "";
+        document.getElementById("dailyLogNotes").value = "";
+
         hideEntriesFlow();
+        document.getElementById("nextStepMessage").classList.remove("hidden");
+        document.getElementById("nextStepMessage").textContent = "Select a daily log to mark habits completed or incomplete.";
 
-        const nextStep = document.getElementById("nextStepMessage");
-        nextStep.classList.remove("hidden");
-        nextStep.textContent = "Select a daily log to see its habit entries.";
-
-        if (selectedUser) {
-          await loadDailyLogsForUser(selectedUser.userId);
-        }
+        setStatus("Selected daily log deleted successfully.");
+        await loadDailyLogsForUser(selectedUser.userId);
       } catch (err) {
         setStatus(`Delete daily log failed: ${err.message}`, true);
       }
     }
 
-    async function createHabitEntry() {
+    async function loadEntriesForDailyLog(dailyLogId) {
+      try {
+        currentEntries = await apiRequest(`${API}/habit-entries/daily-log/${dailyLogId}`);
+      } catch (err) {
+        currentEntries = [];
+        setStatus(`Could not load habit entries: ${err.message}`, true);
+      }
+    }
+
+    async function loadChecklist() {
+      if (!selectedDailyLog || !selectedUser) return;
+
+      await loadHabitsForUser(selectedUser.userId);
+      await loadEntriesForDailyLog(selectedDailyLog.dailyLogId);
+
+      checklistState = currentHabits.map(habit => {
+        const habitId = habit.habitId || habit.habit_id;
+        const matchingEntry = currentEntries.find(entry => (entry.habitId || entry.habit_id) == habitId);
+
+        return {
+          habitId,
+          habitName: habit.name || "",
+          unit: habit.unit || "",
+          completed: matchingEntry ? !!matchingEntry.completed : false,
+          habitEntryId: matchingEntry ? (matchingEntry.habitEntryId || matchingEntry.habit_entry_id) : null
+        };
+      });
+
+      renderChecklist();
+    }
+
+    function renderChecklist() {
+      const container = document.getElementById("checklistContainer");
+      container.innerHTML = "";
+
+      if (!currentHabits || currentHabits.length === 0) {
+        container.innerHTML = `<div class="empty">No habits exist for this user yet. Create habits first.</div>`;
+        return;
+      }
+
+      checklistState.forEach((item, index) => {
+        const div = document.createElement("div");
+        div.className = "check-item";
+
+        div.innerHTML = `
+          <div class="check-left">
+            <div class="check-title">${escapeHtml(item.habitName)}</div>
+            <div class="check-sub">
+              Habit ID: ${item.habitId} • Unit: ${escapeHtml(item.unit)}
+            </div>
+          </div>
+          <div class="check-right">
+            <label for="habitCheck_${index}">Completed</label>
+            <input type="checkbox" id="habitCheck_${index}" ${item.completed ? "checked" : ""} />
+          </div>
+        `;
+
+        const checkbox = div.querySelector("input");
+        checkbox.addEventListener("change", e => {
+          checklistState[index].completed = e.target.checked;
+        });
+
+        container.appendChild(div);
+      });
+    }
+
+    async function saveChecklist() {
       try {
         if (!selectedDailyLog) {
           setStatus("Select a daily log first.", true);
           return;
         }
 
-        const habitId = requireValue("entryHabitId", "Habit ID");
-        if (!habitId) return;
-
-        const completedRaw = document.getElementById("entryCompleted").value.trim();
-
-        await apiRequest(`${API}/habit-entries`, "POST", {
-          dailyLogId: selectedDailyLog.dailyLogId,
-          habitId: Number(habitId),
-          completed: completedRaw === "" ? false : parseBoolean(completedRaw),
-          actualValue: numberOrNull("entryActualValue"),
-          entryNote: document.getElementById("entryNote").value.trim()
-        });
-
-        setStatus("Habit entry created successfully.");
-        await loadEntriesForDailyLog(selectedDailyLog.dailyLogId);
-      } catch (err) {
-        setStatus(`Create habit entry failed: ${err.message}`, true);
-      }
-    }
-
-    async function updateHabitEntry() {
-      try {
-        if (!selectedDailyLog) {
-          setStatus("Select a daily log first.", true);
+        if (!checklistState.length) {
+          setStatus("There are no habits to save for this daily log.", true);
           return;
         }
 
-        const habitEntryId = requireValue("habitEntryId", "Habit Entry ID");
-        const habitId = requireValue("entryHabitId", "Habit ID");
-        if (!habitEntryId || !habitId) return;
+        for (const item of checklistState) {
+          const payload = {
+            dailyLogId: selectedDailyLog.dailyLogId,
+            habitId: item.habitId,
+            completed: item.completed,
+            actualValue: null,
+            entryNote: ""
+          };
 
-        const completedRaw = document.getElementById("entryCompleted").value.trim();
-
-        await apiRequest(`${API}/habit-entries/${habitEntryId}`, "PUT", {
-          dailyLogId: selectedDailyLog.dailyLogId,
-          habitId: Number(habitId),
-          completed: completedRaw === "" ? false : parseBoolean(completedRaw),
-          actualValue: numberOrNull("entryActualValue"),
-          entryNote: document.getElementById("entryNote").value.trim()
-        });
-
-        setStatus("Habit entry updated successfully.");
-        await loadEntriesForDailyLog(selectedDailyLog.dailyLogId);
-      } catch (err) {
-        setStatus(`Update habit entry failed: ${err.message}`, true);
-      }
-    }
-
-    async function deleteHabitEntry() {
-      try {
-        const habitEntryId = requireValue("habitEntryId", "Habit Entry ID");
-        if (!habitEntryId) return;
-
-        await apiRequest(`${API}/habit-entries/${habitEntryId}`, "DELETE");
-        setStatus("Habit entry deleted successfully.");
-
-        if (selectedDailyLog) {
-          await loadEntriesForDailyLog(selectedDailyLog.dailyLogId);
+          if (item.habitEntryId) {
+            await apiRequest(`${API}/habit-entries/${item.habitEntryId}`, "PUT", payload);
+          } else {
+            const created = await apiRequest(`${API}/habit-entries`, "POST", payload);
+            if (created && (created.habitEntryId || created.habit_entry_id)) {
+              item.habitEntryId = created.habitEntryId || created.habit_entry_id;
+            }
+          }
         }
+
+        setStatus("Habit checklist saved successfully.");
+        await loadChecklist();
       } catch (err) {
-        setStatus(`Delete habit entry failed: ${err.message}`, true);
+        setStatus(`Saving checklist failed: ${err.message}`, true);
       }
     }
 
