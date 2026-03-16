@@ -339,7 +339,6 @@
 
       <div class="btn-row">
         <button onclick="createUser()">Create User</button>
-        <button onclick="updateSelectedUser()">Update Selected User</button>
         <button class="danger" onclick="deleteSelectedUser()">Delete Selected User</button>
         <button class="secondary" onclick="loadUsers()">Refresh Users</button>
       </div>
@@ -414,22 +413,7 @@
 
     <div id="statusMessage" class="status"></div>
 
-    <div class="card">
-      <h2>Last API Response</h2>
-      <div class="section-note">Helpful for testing and screenshots.</div>
-      <div class="table-wrap">
-        <table>
-          <thead>
-            <tr>
-              <th>Response Data</th>
-            </tr>
-          </thead>
-          <tbody id="resultsBody">
-            <tr><td>No response yet.</td></tr>
-          </tbody>
-        </table>
-      </div>
-    </div>
+  
   </div>
 
   <script>
@@ -473,25 +457,6 @@
         .replaceAll(">", "&gt;");
     }
 
-    function showResults(data) {
-      const tbody = document.getElementById("resultsBody");
-      tbody.innerHTML = "";
-
-      const rows = Array.isArray(data) ? data : [data];
-
-      if (!rows.length) {
-        tbody.innerHTML = "<tr><td>No data returned.</td></tr>";
-        return;
-      }
-
-      rows.forEach(row => {
-        const tr = document.createElement("tr");
-        const td = document.createElement("td");
-        td.innerHTML = `<pre style="margin:0; white-space:pre-wrap;">${escapeHtml(JSON.stringify(row, null, 2))}</pre>`;
-        tr.appendChild(td);
-        tbody.appendChild(tr);
-      });
-    }
 
     async function apiRequest(url, method = "GET", body = null) {
       clearStatus();
