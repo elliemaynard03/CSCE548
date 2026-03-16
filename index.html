@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Wellness Tracker Client</title>
+  <title>Wellness Tracker</title>
   <style>
     :root {
       --bg: #f6f8fc;
@@ -413,23 +413,24 @@
 
     <div id="statusMessage" class="status"></div>
 
-    <div class="card">
-      <h2>Last API Response</h2>
-      <div class="section-note">Helpful for testing and screenshots.</div>
-      <div class="table-wrap">
-        <table>
-          <thead>
-            <tr>
-              <th>Response Data</th>
-            </tr>
-          </thead>
-          <tbody id="resultsBody">
-            <tr><td>No response yet.</td></tr>
-          </tbody>
-        </table>
+    <div style="display:none;">
+      <div class="card">
+        <h2>Last API Response</h2>
+        <div class="section-note">Helpful for testing and screenshots.</div>
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>Response Data</th>
+              </tr>
+            </thead>
+            <tbody id="resultsBody">
+              <tr><td>No response yet.</td></tr>
+            </tbody>
+          </table>
+        </div>
       </div>
     </div>
-  </div>
 
   <script>
     const BASE = "https://wellness-tracker-y1s5.onrender.com";
