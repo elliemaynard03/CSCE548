@@ -1,11 +1,9 @@
 package main.java.model;
 
-import java.sql.Date;
-
 public class DailyLog {
     private int dailyLogId;
     private int userId;
-    private Date logDate;
+    private String logDate;
     private Double sleepHours;   // nullable
     private Integer moodRating;  // nullable
     private Integer stressLevel; // nullable
@@ -14,7 +12,7 @@ public class DailyLog {
 
     public DailyLog() {}
 
-    public DailyLog(int dailyLogId, int userId, Date logDate, Double sleepHours,
+    public DailyLog(int dailyLogId, int userId, String logDate, Double sleepHours,
                     Integer moodRating, Integer stressLevel, Integer energyLevel, String notes) {
         this.dailyLogId = dailyLogId;
         this.userId = userId;
@@ -32,8 +30,8 @@ public class DailyLog {
     public int getUserId() { return userId; }
     public void setUserId(int userId) { this.userId = userId; }
 
-    public Date getLogDate() { return logDate; }
-    public void setLogDate(Date logDate) { this.logDate = logDate; }
+    public String getLogDate() { return logDate; }
+    public void setLogDate(String logDate) { this.logDate = logDate; }
 
     public Double getSleepHours() { return sleepHours; }
     public void setSleepHours(Double sleepHours) { this.sleepHours = sleepHours; }
@@ -55,7 +53,7 @@ public class DailyLog {
         return "DailyLog{" +
                 "dailyLogId=" + dailyLogId +
                 ", userId=" + userId +
-                ", logDate=" + logDate +
+                ", logDate='" + logDate + '\'' +
                 ", sleepHours=" + sleepHours +
                 ", moodRating=" + moodRating +
                 ", stressLevel=" + stressLevel +
@@ -64,4 +62,3 @@ public class DailyLog {
                 '}';
     }
 }
-
