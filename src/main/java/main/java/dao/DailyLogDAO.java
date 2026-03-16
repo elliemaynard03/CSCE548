@@ -18,7 +18,7 @@ public class DailyLogDAO {
              PreparedStatement ps = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
 
             ps.setInt(1, log.getUserId());
-            ps.setDate(2, log.getLogDate());
+            ps.setDate(2, Date.valueOf(log.getLogDate()));
 
             if (log.getSleepHours() == null) ps.setNull(3, Types.DECIMAL);
             else ps.setDouble(3, log.getSleepHours());
@@ -61,10 +61,6 @@ public class DailyLogDAO {
         return null;
     }
 
-    /**
-     * NEW ✅ Get all DailyLogs (limited for performance)
-     * Example: limit=200
-     */
     public List<DailyLog> getAll(int limit) throws SQLException {
         String sql = """
             SELECT *
@@ -151,15 +147,13 @@ public class DailyLogDAO {
         }
     }
 
-    // ----------------------------
-    // Helpers
-    // ----------------------------
-
     private DailyLog mapRowToDailyLog(ResultSet rs) throws SQLException {
+        Date sqlDate = rs.getDate("log_date");
+
         return new DailyLog(
                 rs.getInt("daily_log_id"),
                 rs.getInt("user_id"),
-                rs.getDate("log_date"),
+                sqlDate == null ? null : sqlDate.toString(),
                 getNullableDouble(rs, "sleep_hours"),
                 (Integer) rs.getObject("mood_rating"),
                 (Integer) rs.getObject("stress_level"),
@@ -168,7 +162,6 @@ public class DailyLogDAO {
         );
     }
 
-    // ✅ Helper to safely convert DECIMAL -> Double
     private Double getNullableDouble(ResultSet rs, String col) throws SQLException {
         java.math.BigDecimal bd = rs.getBigDecimal(col);
         return (bd == null) ? null : bd.doubleValue();
