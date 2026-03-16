@@ -15,7 +15,8 @@
       --blue-dark: #1d4ed8;
       --red: #dc2626;
       --red-dark: #b91c1c;
-      --green: #059669;
+      --gray: #64748b;
+      --gray-dark: #475569;
       --shadow: 0 8px 24px rgba(15, 23, 42, 0.06);
       --radius: 14px;
     }
@@ -30,14 +31,14 @@
     }
 
     .page {
-      max-width: 1500px;
+      max-width: 1300px;
       margin: 0 auto;
       padding: 24px;
     }
 
     h1 {
       margin: 0 0 8px 0;
-      font-size: 40px;
+      font-size: 44px;
     }
 
     .subtitle {
@@ -55,96 +56,82 @@
       margin-bottom: 20px;
     }
 
-    .api-box, .status-box {
-      background: var(--card);
-      border: 1px solid var(--border);
-      border-radius: var(--radius);
-      padding: 14px 16px;
-      box-shadow: var(--shadow);
-    }
-
-    .api-box strong, .status-box strong {
-      display: block;
-      margin-bottom: 6px;
-    }
-
-    .layout {
-      display: grid;
-      grid-template-columns: 1.1fr 1.2fr 1.2fr;
-      gap: 18px;
-      align-items: start;
-    }
-
+    .info-box,
     .card {
       background: var(--card);
       border: 1px solid var(--border);
       border-radius: var(--radius);
-      padding: 18px;
       box-shadow: var(--shadow);
     }
 
+    .info-box {
+      padding: 14px 16px;
+    }
+
+    .info-box strong {
+      display: block;
+      margin-bottom: 6px;
+    }
+
+    .card {
+      padding: 18px;
+      margin-bottom: 18px;
+    }
+
     .card h2 {
-      margin: 0 0 6px 0;
-      font-size: 30px;
+      margin: 0 0 8px 0;
+      font-size: 34px;
+    }
+
+    .card h3 {
+      margin: 0 0 10px 0;
+      font-size: 24px;
     }
 
     .section-note {
       color: var(--muted);
+      font-size: 15px;
       margin-bottom: 14px;
-      font-size: 14px;
-    }
-
-    .subcard {
-      border: 1px solid var(--border);
-      border-radius: 12px;
-      padding: 14px;
-      margin-top: 14px;
-      background: #fbfcff;
-    }
-
-    .subcard h3 {
-      margin: 0 0 10px 0;
-      font-size: 20px;
     }
 
     .form-grid {
       display: grid;
       grid-template-columns: 1fr 1fr;
       gap: 10px;
-      margin-bottom: 10px;
+      margin-bottom: 12px;
     }
 
     .form-grid.single {
       grid-template-columns: 1fr;
     }
 
-    input, textarea, select {
+    input, textarea {
       width: 100%;
-      padding: 10px 12px;
+      padding: 11px 12px;
       border: 1px solid #cfd6e4;
       border-radius: 10px;
-      font-size: 14px;
+      font-size: 15px;
       background: white;
     }
 
     textarea {
-      min-height: 80px;
+      min-height: 90px;
       resize: vertical;
     }
 
     .btn-row {
       display: flex;
-      flex-wrap: wrap;
       gap: 8px;
-      margin-top: 8px;
+      flex-wrap: wrap;
+      margin-bottom: 12px;
     }
 
     button {
       border: none;
       border-radius: 10px;
       padding: 10px 14px;
-      font-size: 14px;
-      font-weight: 600;
+      font-size: 15px;
+      font-weight: 700;
       cursor: pointer;
       color: white;
       background: var(--blue);
@@ -161,45 +148,32 @@
     }
 
     button.secondary {
-      background: #64748b;
+      background: var(--gray);
     }
 
     button.secondary:hover {
-      background: #475569;
-    }
-
-    .pill {
-      display: inline-block;
-      padding: 6px 10px;
-      border-radius: 999px;
-      background: #e8eefc;
-      color: #1e40af;
-      font-size: 13px;
-      font-weight: 600;
-      margin-top: 6px;
+      background: var(--gray-dark);
     }
 
     .list {
       display: flex;
       flex-direction: column;
       gap: 10px;
-      margin-top: 12px;
-      max-height: 420px;
-      overflow-y: auto;
+      margin-top: 10px;
     }
 
     .list-item {
       border: 1px solid var(--border);
       border-radius: 12px;
-      padding: 12px;
+      padding: 14px;
       background: white;
       cursor: pointer;
       transition: 0.15s ease;
     }
 
     .list-item:hover {
-      border-color: #9db4f7;
       background: #f8fbff;
+      border-color: #9db4f7;
     }
 
     .list-item.active {
@@ -209,19 +183,57 @@
 
     .item-title {
       font-weight: 700;
+      font-size: 18px;
       margin-bottom: 4px;
     }
 
     .item-sub {
       color: var(--muted);
+      font-size: 14px;
+      line-height: 1.45;
+    }
+
+    .pill {
+      display: inline-block;
+      padding: 6px 10px;
+      border-radius: 999px;
+      background: #e8eefc;
+      color: #1e40af;
       font-size: 13px;
-      line-height: 1.4;
+      font-weight: 700;
+      margin-top: 6px;
+    }
+
+    .hidden {
+      display: none;
     }
 
     .empty {
       color: var(--muted);
       font-style: italic;
-      padding: 10px 0;
+      padding: 8px 0;
+    }
+
+    .status {
+      margin-top: 18px;
+      padding: 14px 16px;
+      border-radius: 12px;
+      font-weight: 700;
+      display: none;
+    }
+
+    .status.success {
+      display: block;
+      background: #ecfdf5;
+      color: #065f46;
+      border: 1px solid #a7f3d0;
+    }
+
+    .status.error {
+      display: block;
+      background: #fef2f2;
+      color: #991b1b;
+      border: 1px solid #fecaca;
     }
 
     .table-wrap {
@@ -252,45 +264,26 @@
       letter-spacing: .02em;
     }
 
-    .status {
-      margin-top: 18px;
-      padding: 14px 16px;
+    .subtle-box {
+      border: 1px dashed #cbd5e1;
       border-radius: 12px;
-      font-weight: 600;
-      display: none;
-    }
-
-    .status.success {
-      display: block;
-      background: #ecfdf5;
-      color: #065f46;
-      border: 1px solid #a7f3d0;
-    }
-
-    .status.error {
-      display: block;
-      background: #fef2f2;
-      color: #991b1b;
-      border: 1px solid #fecaca;
-    }
-
-    .results {
-      margin-top: 18px;
-    }
-
-    .results h2 {
-      margin: 0 0 10px 0;
-      font-size: 28px;
-    }
-
-    .muted {
+      padding: 16px;
       color: var(--muted);
-      font-size: 13px;
+      background: #fafcff;
+      margin-top: 12px;
     }
 
-    @media (max-width: 1200px) {
-      .layout {
+    @media (max-width: 850px) {
+      .form-grid {
         grid-template-columns: 1fr;
+      }
+
+      h1 {
+        font-size: 34px;
+      }
+
+      .card h2 {
+        font-size: 28px;
       }
     }
   </style>
@@ -301,64 +294,70 @@
       <div>
         <h1>Wellness Tracker Client</h1>
         <div class="subtitle">
-          Connected view of users, habits, daily logs, and habit entries.
+          User → Daily Logs → Habit Entries
         </div>
       </div>
 
-      <div class="api-box">
+      <div class="info-box">
         <strong>API Base</strong>
         <div id="apiBaseText"></div>
       </div>
     </div>
 
-    <div class="status-box">
+    <div class="info-box" style="margin-bottom: 18px;">
       <strong>How this works</strong>
       <div>
-        Select a user to automatically load their habits and daily logs. Then select a daily log to load that day’s habit entries.
+        Start by creating or selecting a user. Then the page will show that user’s daily logs. Select a daily log to see its habit entries.
       </div>
     </div>
 
-    <div class="layout">
-      <!-- LEFT COLUMN -->
-      <div class="card">
-        <h2>Users</h2>
-        <div class="section-note">Create a user, then click that user to load related records.</div>
+    <!-- USERS -->
+    <div class="card">
+      <h2>Users</h2>
+      <div class="section-note">Only users are shown first to keep the page simple.</div>
 
-        <div class="subcard">
-          <h3>Create / Update User</h3>
-          <div class="form-grid">
-            <input id="userId" placeholder="User ID (for update/delete)" />
-            <input id="userEmail" placeholder="Email" />
-            <input id="userFullName" placeholder="Full Name" />
-          </div>
-          <div class="btn-row">
-            <button onclick="createUser()">Create User</button>
-            <button onclick="updateUser()">Update User</button>
-            <button class="danger" onclick="deleteUser()">Delete User</button>
-            <button class="secondary" onclick="loadUsers()">Refresh Users</button>
-          </div>
-        </div>
-
-        <div class="subcard">
-          <h3>All Users</h3>
-          <div id="usersList" class="list"></div>
-        </div>
+      <h3>Create / Update User</h3>
+      <div class="form-grid">
+        <input id="userId" placeholder="User ID (for update/delete)" />
+        <input id="userEmail" placeholder="Email" />
+        <input id="userFullName" placeholder="Full Name" />
       </div>
 
-      <!-- MIDDLE COLUMN -->
+      <div class="btn-row">
+        <button onclick="createUser()">Create User</button>
+        <button onclick="updateUser()">Update User</button>
+        <button class="danger" onclick="deleteUser()">Delete User</button>
+        <button class="secondary" onclick="loadUsers()">Refresh Users</button>
+      </div>
+
+      <h3>All Users</h3>
+      <div id="usersList" class="list"></div>
+    </div>
+
+    <!-- USER DETAILS / DAILY LOGS -->
+    <div id="userFlowSection" class="hidden">
       <div class="card">
         <h2>Selected User</h2>
         <div id="selectedUserSummary" class="section-note">No user selected.</div>
 
-        <div class="subcard">
+        <div class="btn-row">
+          <button class="secondary" onclick="toggleHabits()">Show / Hide Habits</button>
+        </div>
+
+        <div id="habitsSection" class="hidden">
           <h3>Habits for Selected User</h3>
+          <div class="section-note">
+            Habits are optional to view here so the page stays less crowded.
+          </div>
+
           <div class="form-grid">
             <input id="habitId" placeholder="Habit ID (for update/delete)" />
             <input id="habitName" placeholder="Habit Name" />
-            <input id="habitUnit" placeholder="Unit (count, cups, min, etc.)" />
+            <input id="habitUnit" placeholder="Unit (cups, min, count, etc.)" />
             <input id="habitTargetValue" placeholder="Target Value" />
             <input id="habitIsActive" placeholder="true or false" />
           </div>
+
           <div class="btn-row">
             <button onclick="createHabit()">Create Habit</button>
             <button onclick="updateHabit()">Update Habit</button>
@@ -381,76 +380,86 @@
           </div>
         </div>
 
-        <div class="subcard">
-          <h3>Daily Logs for Selected User</h3>
-          <div class="form-grid">
-            <input id="dailyLogId" placeholder="Daily Log ID (for update/delete)" />
-            <input id="dailyLogDate" placeholder="YYYY-MM-DD" />
-            <input id="sleepHours" placeholder="Sleep Hours" />
-            <input id="moodRating" placeholder="Mood Rating" />
-            <input id="stressLevel" placeholder="Stress Level" />
-            <input id="energyLevel" placeholder="Energy Level" />
-          </div>
-          <div class="form-grid single">
-            <textarea id="dailyLogNotes" placeholder="Notes"></textarea>
-          </div>
-          <div class="btn-row">
-            <button onclick="createDailyLog()">Create Daily Log</button>
-            <button onclick="updateDailyLog()">Update Daily Log</button>
-            <button class="danger" onclick="deleteDailyLog()">Delete Daily Log</button>
-          </div>
+        <h3 style="margin-top: 22px;">Daily Logs for Selected User</h3>
+        <div class="section-note">Choose a daily log to load that day’s habit entries.</div>
 
-          <div id="dailyLogsList" class="list"></div>
+        <div class="form-grid">
+          <input id="dailyLogId" placeholder="Daily Log ID (for update/delete)" />
+          <input id="dailyLogDate" placeholder="YYYY-MM-DD" />
+          <input id="sleepHours" placeholder="Sleep Hours" />
+          <input id="moodRating" placeholder="Mood Rating" />
+          <input id="stressLevel" placeholder="Stress Level" />
+          <input id="energyLevel" placeholder="Energy Level" />
         </div>
-      </div>
 
-      <!-- RIGHT COLUMN -->
+        <div class="form-grid single">
+          <textarea id="dailyLogNotes" placeholder="Notes"></textarea>
+        </div>
+
+        <div class="btn-row">
+          <button onclick="createDailyLog()">Create Daily Log</button>
+          <button onclick="updateDailyLog()">Update Daily Log</button>
+          <button class="danger" onclick="deleteDailyLog()">Delete Daily Log</button>
+        </div>
+
+        <div id="dailyLogsList" class="list"></div>
+      </div>
+    </div>
+
+    <!-- HABIT ENTRIES -->
+    <div id="entriesFlowSection" class="hidden">
       <div class="card">
         <h2>Selected Daily Log</h2>
         <div id="selectedLogSummary" class="section-note">No daily log selected.</div>
 
-        <div class="subcard">
-          <h3>Habit Entries for Selected Daily Log</h3>
-          <div class="form-grid">
-            <input id="habitEntryId" placeholder="Habit Entry ID (for update/delete)" />
-            <input id="entryHabitId" placeholder="Habit ID" />
-            <input id="entryCompleted" placeholder="true or false" />
-            <input id="entryActualValue" placeholder="Actual Value" />
-          </div>
-          <div class="form-grid single">
-            <textarea id="entryNote" placeholder="Entry Note"></textarea>
-          </div>
-          <div class="btn-row">
-            <button onclick="createHabitEntry()">Create Habit Entry</button>
-            <button onclick="updateHabitEntry()">Update Habit Entry</button>
-            <button class="danger" onclick="deleteHabitEntry()">Delete Habit Entry</button>
-          </div>
+        <h3>Habit Entries for Selected Daily Log</h3>
 
-          <div class="table-wrap">
-            <table id="entriesTable">
-              <thead>
-                <tr>
-                  <th>Entry ID</th>
-                  <th>Habit ID</th>
-                  <th>Completed</th>
-                  <th>Actual Value</th>
-                  <th>Entry Note</th>
-                </tr>
-              </thead>
-              <tbody></tbody>
-            </table>
-          </div>
+        <div class="form-grid">
+          <input id="habitEntryId" placeholder="Habit Entry ID (for update/delete)" />
+          <input id="entryHabitId" placeholder="Habit ID" />
+          <input id="entryCompleted" placeholder="true or false" />
+          <input id="entryActualValue" placeholder="Actual Value" />
+        </div>
+
+        <div class="form-grid single">
+          <textarea id="entryNote" placeholder="Entry Note"></textarea>
+        </div>
+
+        <div class="btn-row">
+          <button onclick="createHabitEntry()">Create Habit Entry</button>
+          <button onclick="updateHabitEntry()">Update Habit Entry</button>
+          <button class="danger" onclick="deleteHabitEntry()">Delete Habit Entry</button>
+        </div>
+
+        <div class="table-wrap">
+          <table id="entriesTable">
+            <thead>
+              <tr>
+                <th>Entry ID</th>
+                <th>Habit ID</th>
+                <th>Completed</th>
+                <th>Actual Value</th>
+                <th>Entry Note</th>
+              </tr>
+            </thead>
+            <tbody></tbody>
+          </table>
         </div>
       </div>
     </div>
 
+    <!-- PLACEHOLDER MESSAGE -->
+    <div id="nextStepMessage" class="subtle-box">
+      Select a user to continue.
+    </div>
+
     <div id="statusMessage" class="status"></div>
 
-    <div class="results card">
+    <div class="card">
       <h2>Last API Response</h2>
-      <div class="muted">Useful for testing and screenshots.</div>
+      <div class="section-note">Helpful for testing and screenshots.</div>
       <div class="table-wrap">
-        <table id="resultsTable">
+        <table>
           <thead>
             <tr>
               <th>Response Data</th>
@@ -498,6 +507,38 @@
       return String(value).trim().toLowerCase() === "true";
     }
 
+    function numberOrNull(id) {
+      const value = document.getElementById(id).value.trim();
+      return value === "" ? null : Number(value);
+    }
+
+    function escapeHtml(str) {
+      return String(str)
+        .replaceAll("&", "&amp;")
+        .replaceAll("<", "&lt;")
+        .replaceAll(">", "&gt;");
+    }
+
+    function showResults(data) {
+      const tbody = document.getElementById("resultsBody");
+      tbody.innerHTML = "";
+
+      const rows = Array.isArray(data) ? data : [data];
+
+      if (!rows.length) {
+        tbody.innerHTML = "<tr><td>No data returned.</td></tr>";
+        return;
+      }
+
+      rows.forEach(row => {
+        const tr = document.createElement("tr");
+        const td = document.createElement("td");
+        td.innerHTML = `<pre style="margin:0; white-space:pre-wrap;">${escapeHtml(JSON.stringify(row, null, 2))}</pre>`;
+        tr.appendChild(td);
+        tbody.appendChild(tr);
+      });
+    }
+
     async function apiRequest(url, method = "GET", body = null) {
       clearStatus();
 
@@ -526,31 +567,30 @@
       return data;
     }
 
-    function showResults(data) {
-      const tbody = document.getElementById("resultsBody");
-      tbody.innerHTML = "";
-
-      const rows = Array.isArray(data) ? data : [data];
-
-      if (!rows.length) {
-        tbody.innerHTML = "<tr><td>No data returned.</td></tr>";
-        return;
-      }
-
-      rows.forEach(row => {
-        const tr = document.createElement("tr");
-        const td = document.createElement("td");
-        td.innerHTML = `<pre style="margin:0; white-space:pre-wrap;">${escapeHtml(JSON.stringify(row, null, 2))}</pre>`;
-        tr.appendChild(td);
-        tbody.appendChild(tr);
-      });
+    function showUserFlow() {
+      document.getElementById("userFlowSection").classList.remove("hidden");
+      document.getElementById("nextStepMessage").classList.add("hidden");
     }
 
-    function escapeHtml(str) {
-      return str
-        .replaceAll("&", "&amp;")
-        .replaceAll("<", "&lt;")
-        .replaceAll(">", "&gt;");
+    function hideUserFlow() {
+      document.getElementById("userFlowSection").classList.add("hidden");
+      document.getElementById("habitsSection").classList.add("hidden");
+    }
+
+    function showEntriesFlow() {
+      document.getElementById("entriesFlowSection").classList.remove("hidden");
+    }
+
+    function hideEntriesFlow() {
+      document.getElementById("entriesFlowSection").classList.add("hidden");
+    }
+
+    function toggleHabits() {
+      if (!selectedUser) {
+        setStatus("Select a user first.", true);
+        return;
+      }
+      document.getElementById("habitsSection").classList.toggle("hidden");
     }
 
     async function loadUsers() {
@@ -573,15 +613,19 @@
       }
 
       users.forEach(user => {
+        const userId = user.userId || user.user_id;
+        const fullName = user.fullName || user.full_name || "Unnamed User";
+        const email = user.email || "";
+
         const div = document.createElement("div");
-        div.className = "list-item" + (selectedUser && selectedUser.userId == user.userId ? " active" : "");
+        div.className = "list-item" + (selectedUser && selectedUser.userId == userId ? " active" : "");
         div.onclick = () => selectUser(user);
 
         div.innerHTML = `
-          <div class="item-title">${user.fullName || user.full_name || "Unnamed User"}</div>
+          <div class="item-title">${fullName}</div>
           <div class="item-sub">
-            User ID: ${user.userId || user.user_id}<br>
-            Email: ${user.email || ""}
+            User ID: ${userId}<br>
+            Email: ${email}
           </div>
         `;
 
@@ -600,7 +644,7 @@
 
       document.getElementById("selectedUserSummary").innerHTML = `
         <strong>${selectedUser.fullName}</strong><br>
-        Email: ${selectedUser.email}<br>
+        Email: ${selectedUser.email || ""}<br>
         <span class="pill">Selected User ID: ${selectedUser.userId}</span>
       `;
 
@@ -608,19 +652,16 @@
       document.getElementById("userEmail").value = selectedUser.email || "";
       document.getElementById("userFullName").value = selectedUser.fullName || "";
 
+      document.getElementById("selectedLogSummary").textContent = "No daily log selected.";
       renderEntries([]);
-      renderDailyLogs([]);
-      renderHabits([]);
-      document.getElementById("selectedLogSummary").innerHTML = "No daily log selected.";
+      showUserFlow();
+      hideEntriesFlow();
 
-      renderUsersFromCurrentSelectionHighlight();
+      document.getElementById("nextStepMessage").textContent = "Select a daily log to see its habit entries.";
 
+      await loadUsers();
       await loadHabitsForUser(selectedUser.userId);
       await loadDailyLogsForUser(selectedUser.userId);
-    }
-
-    function renderUsersFromCurrentSelectionHighlight() {
-      loadUsers();
     }
 
     async function loadHabitsForUser(userId) {
@@ -643,21 +684,24 @@
       }
 
       habits.forEach(habit => {
+        const habitId = habit.habitId || habit.habit_id;
         const tr = document.createElement("tr");
         tr.innerHTML = `
-          <td>${habit.habitId || habit.habit_id}</td>
+          <td>${habitId}</td>
           <td>${habit.name || ""}</td>
           <td>${habit.unit || ""}</td>
           <td>${habit.targetValue || habit.target_value || ""}</td>
           <td>${String(habit.isActive ?? habit.is_active)}</td>
         `;
+
         tr.onclick = () => {
-          document.getElementById("habitId").value = habit.habitId || habit.habit_id;
+          document.getElementById("habitId").value = habitId;
           document.getElementById("habitName").value = habit.name || "";
           document.getElementById("habitUnit").value = habit.unit || "";
           document.getElementById("habitTargetValue").value = habit.targetValue || habit.target_value || "";
           document.getElementById("habitIsActive").value = String(habit.isActive ?? habit.is_active);
         };
+
         tbody.appendChild(tr);
       });
     }
@@ -683,18 +727,23 @@
 
       logs.forEach(log => {
         const logId = log.dailyLogId || log.daily_log_id;
+        const logDate = log.logDate || log.log_date || "No Date";
+
         const div = document.createElement("div");
         div.className = "list-item" + (selectedDailyLog && selectedDailyLog.dailyLogId == logId ? " active" : "");
         div.onclick = () => selectDailyLog(log);
 
         div.innerHTML = `
-          <div class="item-title">${log.logDate || log.log_date || "No Date"}</div>
+          <div class="item-title">${logDate}</div>
           <div class="item-sub">
             Daily Log ID: ${logId}<br>
-            Sleep: ${log.sleepHours || log.sleep_hours || ""} | Mood: ${log.moodRating || log.mood_rating || ""}<br>
-            Stress: ${log.stressLevel || log.stress_level || ""} | Energy: ${log.energyLevel || log.energy_level || ""}
+            Sleep: ${log.sleepHours || log.sleep_hours || ""} |
+            Mood: ${log.moodRating || log.mood_rating || ""} |
+            Stress: ${log.stressLevel || log.stress_level || ""} |
+            Energy: ${log.energyLevel || log.energy_level || ""}
           </div>
         `;
+
         container.appendChild(div);
       });
     }
@@ -706,7 +755,7 @@
       };
 
       document.getElementById("selectedLogSummary").innerHTML = `
-        <strong>${selectedDailyLog.logDate}</strong><br>
+        <strong>${selectedDailyLog.logDate || "Selected Daily Log"}</strong><br>
         <span class="pill">Selected Daily Log ID: ${selectedDailyLog.dailyLogId}</span>
       `;
 
@@ -718,8 +767,11 @@
       document.getElementById("energyLevel").value = log.energyLevel || log.energy_level || "";
       document.getElementById("dailyLogNotes").value = log.notes || "";
 
-      await loadEntriesForDailyLog(selectedDailyLog.dailyLogId);
+      showEntriesFlow();
+      document.getElementById("nextStepMessage").classList.add("hidden");
+
       await loadDailyLogsForUser(selectedUser.userId);
+      await loadEntriesForDailyLog(selectedDailyLog.dailyLogId);
     }
 
     async function loadEntriesForDailyLog(dailyLogId) {
@@ -742,21 +794,25 @@
       }
 
       entries.forEach(entry => {
+        const entryId = entry.habitEntryId || entry.habit_entry_id;
+
         const tr = document.createElement("tr");
         tr.innerHTML = `
-          <td>${entry.habitEntryId || entry.habit_entry_id}</td>
+          <td>${entryId}</td>
           <td>${entry.habitId || entry.habit_id}</td>
           <td>${String(entry.completed)}</td>
           <td>${entry.actualValue || entry.actual_value || ""}</td>
           <td>${entry.entryNote || entry.entry_note || ""}</td>
         `;
+
         tr.onclick = () => {
-          document.getElementById("habitEntryId").value = entry.habitEntryId || entry.habit_entry_id;
+          document.getElementById("habitEntryId").value = entryId;
           document.getElementById("entryHabitId").value = entry.habitId || entry.habit_id;
           document.getElementById("entryCompleted").value = String(entry.completed);
           document.getElementById("entryActualValue").value = entry.actualValue || entry.actual_value || "";
           document.getElementById("entryNote").value = entry.entryNote || entry.entry_note || "";
         };
+
         tbody.appendChild(tr);
       });
     }
@@ -770,11 +826,13 @@
         await apiRequest(`${API}/users`, "POST", { email, fullName });
         setStatus("User created successfully.");
 
-        await loadUsers();
-
         const users = await apiRequest(`${API}/users`);
+        renderUsers(users);
+
         const newest = users[users.length - 1];
-        if (newest) await selectUser(newest);
+        if (newest) {
+          await selectUser(newest);
+        }
       } catch (err) {
         setStatus(`Create user failed: ${err.message}`, true);
       }
@@ -789,17 +847,19 @@
 
         await apiRequest(`${API}/users/${id}`, "PUT", { email, fullName });
         setStatus("User updated successfully.");
-        await loadUsers();
 
         if (selectedUser && selectedUser.userId == id) {
-          selectedUser.email = email;
           selectedUser.fullName = fullName;
+          selectedUser.email = email;
+
           document.getElementById("selectedUserSummary").innerHTML = `
             <strong>${fullName}</strong><br>
             Email: ${email}<br>
             <span class="pill">Selected User ID: ${id}</span>
           `;
         }
+
+        await loadUsers();
       } catch (err) {
         setStatus(`Update user failed: ${err.message}`, true);
       }
@@ -815,11 +875,23 @@
 
         selectedUser = null;
         selectedDailyLog = null;
+
+        document.getElementById("userId").value = "";
+        document.getElementById("userEmail").value = "";
+        document.getElementById("userFullName").value = "";
+
         document.getElementById("selectedUserSummary").textContent = "No user selected.";
         document.getElementById("selectedLogSummary").textContent = "No daily log selected.";
+        document.getElementById("dailyLogsList").innerHTML = "";
         renderHabits([]);
-        renderDailyLogs([]);
         renderEntries([]);
+        hideUserFlow();
+        hideEntriesFlow();
+
+        const nextStep = document.getElementById("nextStepMessage");
+        nextStep.classList.remove("hidden");
+        nextStep.textContent = "Select a user to continue.";
+
         await loadUsers();
       } catch (err) {
         setStatus(`Delete user failed: ${err.message}`, true);
@@ -857,12 +929,12 @@
 
     async function updateHabit() {
       try {
-        const habitId = requireValue("habitId", "Habit ID");
         if (!selectedUser) {
           setStatus("Select a user first.", true);
           return;
         }
 
+        const habitId = requireValue("habitId", "Habit ID");
         const name = requireValue("habitName", "Habit Name");
         const unit = requireValue("habitUnit", "Unit");
         if (!habitId || !name || !unit) return;
@@ -893,7 +965,9 @@
         await apiRequest(`${API}/habits/${habitId}`, "DELETE");
         setStatus("Habit deleted successfully.");
 
-        if (selectedUser) await loadHabitsForUser(selectedUser.userId);
+        if (selectedUser) {
+          await loadHabitsForUser(selectedUser.userId);
+        }
       } catch (err) {
         setStatus(`Delete habit failed: ${err.message}`, true);
       }
@@ -928,12 +1002,12 @@
 
     async function updateDailyLog() {
       try {
-        const dailyLogId = requireValue("dailyLogId", "Daily Log ID");
         if (!selectedUser) {
           setStatus("Select a user first.", true);
           return;
         }
 
+        const dailyLogId = requireValue("dailyLogId", "Daily Log ID");
         const logDate = requireValue("dailyLogDate", "Log Date");
         if (!dailyLogId || !logDate) return;
 
@@ -949,6 +1023,7 @@
 
         setStatus("Daily log updated successfully.");
         await loadDailyLogsForUser(selectedUser.userId);
+
         if (selectedDailyLog && selectedDailyLog.dailyLogId == dailyLogId) {
           await loadEntriesForDailyLog(dailyLogId);
         }
@@ -968,8 +1043,15 @@
         selectedDailyLog = null;
         document.getElementById("selectedLogSummary").textContent = "No daily log selected.";
         renderEntries([]);
+        hideEntriesFlow();
 
-        if (selectedUser) await loadDailyLogsForUser(selectedUser.userId);
+        const nextStep = document.getElementById("nextStepMessage");
+        nextStep.classList.remove("hidden");
+        nextStep.textContent = "Select a daily log to see its habit entries.";
+
+        if (selectedUser) {
+          await loadDailyLogsForUser(selectedUser.userId);
+        }
       } catch (err) {
         setStatus(`Delete daily log failed: ${err.message}`, true);
       }
@@ -1004,12 +1086,13 @@
 
     async function updateHabitEntry() {
       try {
-        const habitEntryId = requireValue("habitEntryId", "Habit Entry ID");
-        const habitId = requireValue("entryHabitId", "Habit ID");
         if (!selectedDailyLog) {
           setStatus("Select a daily log first.", true);
           return;
         }
+
+        const habitEntryId = requireValue("habitEntryId", "Habit Entry ID");
+        const habitId = requireValue("entryHabitId", "Habit ID");
         if (!habitEntryId || !habitId) return;
 
         const completedRaw = document.getElementById("entryCompleted").value.trim();
@@ -1043,11 +1126,6 @@
       } catch (err) {
         setStatus(`Delete habit entry failed: ${err.message}`, true);
       }
-    }
-
-    function numberOrNull(id) {
-      const value = document.getElementById(id).value.trim();
-      return value === "" ? null : Number(value);
     }
 
     loadUsers();
